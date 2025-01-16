@@ -270,6 +270,10 @@ fn main() {
     #[cfg(target_os = "macos")]
     assert!(loader.load());
 
+    /// FIXME: if we wanna sandbox on windows, this project must be compiled with `-target-feature=+crt-static`(aka. /MT)
+    #[cfg(target_os = "windows")]
+    let sandbox = sandbox_info_create();
+
     let args = Args::new(std::env::args());
 
     let cmd = command_line_create().unwrap();
@@ -286,11 +290,7 @@ fn main() {
     let window = Arc::new(Mutex::new(None));
     let mut app = DemoApp::new(window.clone());
 
-    let ret = execute_process(
-        Some(args.as_main_args()),
-        Some(&mut app),
-        std::ptr::null_mut(),
-    );
+    let ret = execute_process(Some(args.as_main_args()), Some(&mut app), sandbox.cast());
 
     if is_browser_process {
         println!("launch browser process");
@@ -307,13 +307,15 @@ fn main() {
         return;
     }
     let mut settings = Settings::default();
-    settings.no_sandbox = true as _;
     assert_eq!(
         initialize(
             Some(args.as_main_args()),
             Some(&settings),
             Some(&mut app),
-            std::ptr::null_mut()
+            #[cfg(target_os = "windows")]
+            sandbox.cast(),
+            #[cfg(not(target_os = "windows"))]
+            std::ptr::null_mut(),
         ),
         1
     );
@@ -325,4 +327,7 @@ fn main() {
     assert!(window.has_one_ref());
 
     shutdown();
+
+    #[cfg(target_os = "windows")]
+    sandbox_info_destroy(sandbox.cast());
 }

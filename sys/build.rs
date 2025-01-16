@@ -15,6 +15,7 @@ fn main() -> Result<(), String> {
 
     let path = std::path::PathBuf::from(path).canonicalize().unwrap();
     let path = path.display();
+
     println!("cargo::rerun-if-changed={path}");
     println!("cargo::rustc-link-search={path}");
 
@@ -23,13 +24,25 @@ fn main() -> Result<(), String> {
             println!("cargo::rustc-link-lib=dylib=cef");
         }
         Ok("windows") => {
+            // FIXME: Maybe we can get the windows libs from cef cmake?
+            const LIBS: &[&str] = &[
+                "advapi32", "comdlg32", "dbghelp", "dnsapi", "gdi32", "msimg32", "odbc32",
+                "odbccp32", "oleaut32", "shell32", "shlwapi", "user32", "usp10", "uuid", "version",
+                "wininet", "winmm", "winspool", "ws2_32", "mincore", "cfgmgr32", "ntdll",
+                "onecore", "pdh", "powrprof", "propsys", "setupapi", "shcore", "tbs", "userenv",
+                "wbemuuid", "winmm", "delayimp",
+            ];
+            println!("cargo::rustc-link-lib=libcef_dll_wrapper");
             println!("cargo::rustc-link-lib=dylib=libcef");
+            println!("cargo::rustc-link-lib=cef_sandbox");
+            for lib in LIBS {
+                println!("cargo::rustc-link-lib={lib}");
+            }
         }
         Ok("macos") => {
             println!("cargo::rustc-link-lib=framework=AppKit");
 
             println!("cargo::rustc-link-lib=static=cef_dll_wrapper");
-
             println!("cargo::rustc-link-lib=cef_sandbox");
             println!("cargo::rustc-link-lib=sandbox");
         }

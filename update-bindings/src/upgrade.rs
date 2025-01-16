@@ -218,10 +218,6 @@ fn bindgen(target: &str, cef_path: &Path) -> crate::Result<()> {
 }
 
 fn build_cef_dll_wrapper(cef_path: &Path, archive_dir: &Path, os: &str) {
-    if os != "macos" {
-        return;
-    }
-
     let lib_name = format!(
         "libcef_dll_wrapper.{}",
         if os == "windows" { "lib" } else { "a" }
