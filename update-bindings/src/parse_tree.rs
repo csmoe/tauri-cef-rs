@@ -890,20 +890,10 @@ impl SignatureRef<'_> {
                             } else {
                                 match modifiers {
                                     [TypeModifier::MutPtr] => Some(quote! {
-                                        let mut #arg_name = if #arg_name.is_null() {
-                                            None
-                                        } else {
-                                            Some(WrapParamRef::<#ty>::from(#arg_name))
-                                        };
-                                        let #arg_name = #arg_name.as_mut().map(|arg| arg.as_mut());
+                                        let #arg_name = unsafe { #arg_name.cast::<#ty>().as_mut() };
                                     }),
                                     [TypeModifier::ConstPtr] => Some(quote! {
-                                        let #arg_name = if #arg_name.is_null() {
-                                            None
-                                        } else {
-                                            Some(WrapParamRef::<#ty>::from(#arg_name))
-                                        };
-                                        let #arg_name = #arg_name.as_ref().map(|arg| arg.as_ref());
+                                        let #arg_name = unsafe { #arg_name.cast::<#ty>().as_ref() };
                                     }),
                                     _ => None,
                                 }
@@ -1000,12 +990,10 @@ impl SignatureRef<'_> {
 
                             match modifiers {
                                 [TypeModifier::MutPtr, ..] => Some(quote! {
-                                    let mut #arg_name = WrapParamRef::<#ty>::from(#arg_name);
-                                    let #arg_name = #arg_name.as_mut();
+                                    let #arg_name = unsafe { #arg_name.cast::<#ty>().as_mut() };
                                 }),
                                 [TypeModifier::ConstPtr, ..] => Some(quote! {
-                                    let #arg_name = WrapParamRef::<#ty>::from(#arg_name);
-                                    let #arg_name = #arg_name.as_ref();
+                                    let #arg_name = unsafe { #arg_name.cast::<#ty>().as_ref() };
                                 }),
                                 _ => None,
                             }
@@ -1602,7 +1590,7 @@ impl<'a> ParseTree<'a> {
                 unused_variables
             )]
             use crate::rc::{
-                ConvertParam, ConvertReturnValue, Rc, RcImpl, RefGuard, WrapParamRef,
+                ConvertParam, ConvertReturnValue, Rc, RcImpl, RefGuard
             };
             use cef_dll_sys::*;
         }

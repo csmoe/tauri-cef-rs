@@ -4,7 +4,7 @@
     non_camel_case_types,
     unused_variables
 )]
-use crate::rc::{ConvertParam, ConvertReturnValue, Rc, RcImpl, RefGuard, WrapParamRef};
+use crate::rc::{ConvertParam, ConvertReturnValue, Rc, RcImpl, RefGuard};
 use cef_dll_sys::*;
 
 /// Perform the conversion between CEF and Rust types in field initializers.
@@ -8919,22 +8919,11 @@ mod impl_cef_cookie_visitor_t {
         let (arg_self_, arg_cookie, arg_count, arg_total, arg_delete_cookie) =
             (self_, cookie, count, total, delete_cookie);
         let arg_self_: &RcImpl<_, I> = RcImpl::get(arg_self_);
-        let arg_cookie = if arg_cookie.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Cookie>::from(arg_cookie))
-        };
-        let arg_cookie = arg_cookie.as_ref().map(|arg| arg.as_ref());
+        let arg_cookie = unsafe { arg_cookie.cast::<Cookie>().as_ref() };
         let arg_count = arg_count.as_raw();
         let arg_total = arg_total.as_raw();
-        let mut arg_delete_cookie = if arg_delete_cookie.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_delete_cookie,
-            ))
-        };
-        let arg_delete_cookie = arg_delete_cookie.as_mut().map(|arg| arg.as_mut());
+        let arg_delete_cookie =
+            unsafe { arg_delete_cookie.cast::<::std::os::raw::c_int>().as_mut() };
         let result = ImplCookieVisitor::visit(
             &arg_self_.interface,
             arg_cookie,
@@ -10158,12 +10147,7 @@ mod impl_cef_media_sink_device_info_callback_t {
     ) {
         let (arg_self_, arg_device_info) = (self_, device_info);
         let arg_self_: &RcImpl<_, I> = RcImpl::get(arg_self_);
-        let arg_device_info = if arg_device_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<MediaSinkDeviceInfo>::from(arg_device_info))
-        };
-        let arg_device_info = arg_device_info.as_ref().map(|arg| arg.as_ref());
+        let arg_device_info = unsafe { arg_device_info.cast::<MediaSinkDeviceInfo>().as_ref() };
         let result = ImplMediaSinkDeviceInfoCallback::on_media_sink_device_info(
             &arg_self_.interface,
             arg_device_info,
@@ -14014,12 +13998,7 @@ mod impl_cef_audio_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let mut arg_params = if arg_params.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<AudioParameters>::from(arg_params))
-        };
-        let arg_params = arg_params.as_mut().map(|arg| arg.as_mut());
+        let arg_params = unsafe { arg_params.cast::<AudioParameters>().as_mut() };
         let result =
             ImplAudioHandler::get_audio_parameters(&arg_self_.interface, arg_browser, arg_params);
         result.into()
@@ -14035,12 +14014,7 @@ mod impl_cef_audio_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_params = if arg_params.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<AudioParameters>::from(arg_params))
-        };
-        let arg_params = arg_params.as_ref().map(|arg| arg.as_ref());
+        let arg_params = unsafe { arg_params.cast::<AudioParameters>().as_ref() };
         let arg_channels = arg_channels.as_raw();
         let result = ImplAudioHandler::on_audio_stream_started(
             &arg_self_.interface,
@@ -14686,12 +14660,7 @@ mod impl_cef_menu_model_delegate_t {
         let mut arg_menu_model = unsafe { arg_menu_model.as_mut() }
             .map(|arg| MenuModel(unsafe { RefGuard::from_raw(arg) }));
         let arg_menu_model = arg_menu_model.as_mut();
-        let arg_screen_point = if arg_screen_point.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Point>::from(arg_screen_point))
-        };
-        let arg_screen_point = arg_screen_point.as_ref().map(|arg| arg.as_ref());
+        let arg_screen_point = unsafe { arg_screen_point.cast::<Point>().as_ref() };
         let result = ImplMenuModelDelegate::mouse_outside_menu(
             &arg_self_.interface,
             arg_menu_model,
@@ -16712,18 +16681,8 @@ mod impl_cef_context_menu_handler_t {
         let mut arg_frame =
             unsafe { arg_frame.as_mut() }.map(|arg| Frame(unsafe { RefGuard::from_raw(arg) }));
         let arg_frame = arg_frame.as_mut();
-        let arg_location = if arg_location.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Point>::from(arg_location))
-        };
-        let arg_location = arg_location.as_ref().map(|arg| arg.as_ref());
-        let arg_size = if arg_size.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Size>::from(arg_size))
-        };
-        let arg_size = arg_size.as_ref().map(|arg| arg.as_ref());
+        let arg_location = unsafe { arg_location.cast::<Point>().as_ref() };
+        let arg_size = unsafe { arg_size.cast::<Size>().as_ref() };
         let arg_edit_state_flags = arg_edit_state_flags.as_raw();
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| RunQuickMenuCallback(unsafe { RefGuard::from_raw(arg) }));
@@ -18065,12 +18024,7 @@ mod impl_cef_display_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_new_size = if arg_new_size.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Size>::from(arg_new_size))
-        };
-        let arg_new_size = arg_new_size.as_ref().map(|arg| arg.as_ref());
+        let arg_new_size = unsafe { arg_new_size.cast::<Size>().as_ref() };
         let result =
             ImplDisplayHandler::on_auto_resize(&arg_self_.interface, arg_browser, arg_new_size);
         result.into()
@@ -18107,12 +18061,8 @@ mod impl_cef_display_handler_t {
         let arg_browser = arg_browser.as_mut();
         let arg_cursor = arg_cursor.as_raw();
         let arg_type_ = arg_type_.as_raw();
-        let arg_custom_cursor_info = if arg_custom_cursor_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<CursorInfo>::from(arg_custom_cursor_info))
-        };
-        let arg_custom_cursor_info = arg_custom_cursor_info.as_ref().map(|arg| arg.as_ref());
+        let arg_custom_cursor_info =
+            unsafe { arg_custom_cursor_info.cast::<CursorInfo>().as_ref() };
         let result = ImplDisplayHandler::on_cursor_change(
             &arg_self_.interface,
             arg_browser,
@@ -19343,12 +19293,7 @@ mod impl_cef_drag_handler_t {
             unsafe { arg_frame.as_mut() }.map(|arg| Frame(unsafe { RefGuard::from_raw(arg) }));
         let arg_frame = arg_frame.as_mut();
         let arg_regions_count = arg_regions_count.as_raw();
-        let arg_regions = if arg_regions.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<DraggableRegion>::from(arg_regions))
-        };
-        let arg_regions = arg_regions.as_ref().map(|arg| arg.as_ref());
+        let arg_regions = unsafe { arg_regions.cast::<DraggableRegion>().as_ref() };
         let result = ImplDragHandler::on_draggable_regions_changed(
             &arg_self_.interface,
             arg_browser,
@@ -19549,12 +19494,7 @@ mod impl_cef_find_handler_t {
         let arg_browser = arg_browser.as_mut();
         let arg_identifier = arg_identifier.as_raw();
         let arg_count = arg_count.as_raw();
-        let arg_selection_rect = if arg_selection_rect.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_selection_rect))
-        };
-        let arg_selection_rect = arg_selection_rect.as_ref().map(|arg| arg.as_ref());
+        let arg_selection_rect = unsafe { arg_selection_rect.cast::<Rect>().as_ref() };
         let arg_active_match_ordinal = arg_active_match_ordinal.as_raw();
         let arg_final_update = arg_final_update.as_raw();
         let result = ImplFindHandler::on_find_result(
@@ -20397,14 +20337,11 @@ mod impl_cef_jsdialog_handler_t {
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| JsdialogCallback(unsafe { RefGuard::from_raw(arg) }));
         let arg_callback = arg_callback.as_mut();
-        let mut arg_suppress_message = if arg_suppress_message.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_suppress_message,
-            ))
+        let arg_suppress_message = unsafe {
+            arg_suppress_message
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_suppress_message = arg_suppress_message.as_mut().map(|arg| arg.as_mut());
         let result = ImplJsdialogHandler::on_jsdialog(
             &arg_self_.interface,
             arg_browser,
@@ -20729,26 +20666,13 @@ mod impl_cef_keyboard_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_event = if arg_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<KeyEvent>::from(arg_event))
+        let arg_event = unsafe { arg_event.cast::<KeyEvent>().as_ref() };
+        let arg_os_event = unsafe { arg_os_event.cast::<MSG>().as_mut() };
+        let arg_is_keyboard_shortcut = unsafe {
+            arg_is_keyboard_shortcut
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_event = arg_event.as_ref().map(|arg| arg.as_ref());
-        let mut arg_os_event = if arg_os_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<MSG>::from(arg_os_event))
-        };
-        let arg_os_event = arg_os_event.as_mut().map(|arg| arg.as_mut());
-        let mut arg_is_keyboard_shortcut = if arg_is_keyboard_shortcut.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_is_keyboard_shortcut,
-            ))
-        };
-        let arg_is_keyboard_shortcut = arg_is_keyboard_shortcut.as_mut().map(|arg| arg.as_mut());
         let result = ImplKeyboardHandler::on_pre_key_event(
             &arg_self_.interface,
             arg_browser,
@@ -20769,18 +20693,8 @@ mod impl_cef_keyboard_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_event = if arg_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<KeyEvent>::from(arg_event))
-        };
-        let arg_event = arg_event.as_ref().map(|arg| arg.as_ref());
-        let mut arg_os_event = if arg_os_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<MSG>::from(arg_os_event))
-        };
-        let arg_os_event = arg_os_event.as_mut().map(|arg| arg.as_mut());
+        let arg_event = unsafe { arg_event.cast::<KeyEvent>().as_ref() };
+        let arg_os_event = unsafe { arg_os_event.cast::<MSG>().as_mut() };
         let result = ImplKeyboardHandler::on_key_event(
             &arg_self_.interface,
             arg_browser,
@@ -21052,18 +20966,8 @@ mod impl_cef_life_span_handler_t {
         let arg_target_frame_name = arg_target_frame_name.as_ref();
         let arg_target_disposition = arg_target_disposition.as_raw();
         let arg_user_gesture = arg_user_gesture.as_raw();
-        let arg_popup_features = if arg_popup_features.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<PopupFeatures>::from(arg_popup_features))
-        };
-        let arg_popup_features = arg_popup_features.as_ref().map(|arg| arg.as_ref());
-        let mut arg_window_info = if arg_window_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<WindowInfo>::from(arg_window_info))
-        };
-        let arg_window_info = arg_window_info.as_mut().map(|arg| arg.as_mut());
+        let arg_popup_features = unsafe { arg_popup_features.cast::<PopupFeatures>().as_ref() };
+        let arg_window_info = unsafe { arg_window_info.cast::<WindowInfo>().as_mut() };
         let mut arg_client = unsafe { arg_client.as_mut() }.and_then(|ptr| {
             if ptr.is_null() {
                 None
@@ -21072,12 +20976,7 @@ mod impl_cef_life_span_handler_t {
             }
         });
         let arg_client = arg_client.as_mut();
-        let mut arg_settings = if arg_settings.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<BrowserSettings>::from(arg_settings))
-        };
-        let arg_settings = arg_settings.as_mut().map(|arg| arg.as_mut());
+        let arg_settings = unsafe { arg_settings.cast::<BrowserSettings>().as_mut() };
         let mut arg_extra_info = unsafe { arg_extra_info.as_mut() }.and_then(|ptr| {
             if ptr.is_null() {
                 None
@@ -21086,14 +20985,11 @@ mod impl_cef_life_span_handler_t {
             }
         });
         let arg_extra_info = arg_extra_info.as_mut();
-        let mut arg_no_javascript_access = if arg_no_javascript_access.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_no_javascript_access,
-            ))
+        let arg_no_javascript_access = unsafe {
+            arg_no_javascript_access
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_no_javascript_access = arg_no_javascript_access.as_mut().map(|arg| arg.as_mut());
         let result = ImplLifeSpanHandler::on_before_popup(
             &arg_self_.interface,
             arg_browser,
@@ -21159,12 +21055,7 @@ mod impl_cef_life_span_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let mut arg_window_info = if arg_window_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<WindowInfo>::from(arg_window_info))
-        };
-        let arg_window_info = arg_window_info.as_mut().map(|arg| arg.as_mut());
+        let arg_window_info = unsafe { arg_window_info.cast::<WindowInfo>().as_mut() };
         let mut arg_client = unsafe { arg_client.as_mut() }.and_then(|ptr| {
             if ptr.is_null() {
                 None
@@ -21173,12 +21064,7 @@ mod impl_cef_life_span_handler_t {
             }
         });
         let arg_client = arg_client.as_mut();
-        let mut arg_settings = if arg_settings.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<BrowserSettings>::from(arg_settings))
-        };
-        let arg_settings = arg_settings.as_mut().map(|arg| arg.as_mut());
+        let arg_settings = unsafe { arg_settings.cast::<BrowserSettings>().as_mut() };
         let mut arg_extra_info = unsafe { arg_extra_info.as_mut() }.and_then(|ptr| {
             if ptr.is_null() {
                 None
@@ -21187,14 +21073,11 @@ mod impl_cef_life_span_handler_t {
             }
         });
         let arg_extra_info = arg_extra_info.as_mut();
-        let mut arg_use_default_window = if arg_use_default_window.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_use_default_window,
-            ))
+        let arg_use_default_window = unsafe {
+            arg_use_default_window
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_use_default_window = arg_use_default_window.as_mut().map(|arg| arg.as_mut());
         let result = ImplLifeSpanHandler::on_before_dev_tools_popup(
             &arg_self_.interface,
             arg_browser,
@@ -23707,12 +23590,7 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let mut arg_rect = if arg_rect.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_rect))
-        };
-        let arg_rect = arg_rect.as_mut().map(|arg| arg.as_mut());
+        let arg_rect = unsafe { arg_rect.cast::<Rect>().as_mut() };
         let result =
             ImplRenderHandler::get_root_screen_rect(&arg_self_.interface, arg_browser, arg_rect);
         result.into()
@@ -23727,12 +23605,7 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let mut arg_rect = if arg_rect.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_rect))
-        };
-        let arg_rect = arg_rect.as_mut().map(|arg| arg.as_mut());
+        let arg_rect = unsafe { arg_rect.cast::<Rect>().as_mut() };
         let result = ImplRenderHandler::get_view_rect(&arg_self_.interface, arg_browser, arg_rect);
     }
     extern "C" fn get_screen_point<I: ImplRenderHandler>(
@@ -23751,18 +23624,8 @@ mod impl_cef_render_handler_t {
         let arg_browser = arg_browser.as_mut();
         let arg_view_x = arg_view_x.as_raw();
         let arg_view_y = arg_view_y.as_raw();
-        let mut arg_screen_x = if arg_screen_x.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(arg_screen_x))
-        };
-        let arg_screen_x = arg_screen_x.as_mut().map(|arg| arg.as_mut());
-        let mut arg_screen_y = if arg_screen_y.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(arg_screen_y))
-        };
-        let arg_screen_y = arg_screen_y.as_mut().map(|arg| arg.as_mut());
+        let arg_screen_x = unsafe { arg_screen_x.cast::<::std::os::raw::c_int>().as_mut() };
+        let arg_screen_y = unsafe { arg_screen_y.cast::<::std::os::raw::c_int>().as_mut() };
         let result = ImplRenderHandler::get_screen_point(
             &arg_self_.interface,
             arg_browser,
@@ -23783,12 +23646,7 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let mut arg_screen_info = if arg_screen_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<ScreenInfo>::from(arg_screen_info))
-        };
-        let arg_screen_info = arg_screen_info.as_mut().map(|arg| arg.as_mut());
+        let arg_screen_info = unsafe { arg_screen_info.cast::<ScreenInfo>().as_mut() };
         let result =
             ImplRenderHandler::get_screen_info(&arg_self_.interface, arg_browser, arg_screen_info);
         result.into()
@@ -23816,12 +23674,7 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_rect = if arg_rect.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_rect))
-        };
-        let arg_rect = arg_rect.as_ref().map(|arg| arg.as_ref());
+        let arg_rect = unsafe { arg_rect.cast::<Rect>().as_ref() };
         let result = ImplRenderHandler::on_popup_size(&arg_self_.interface, arg_browser, arg_rect);
     }
     extern "C" fn on_paint<I: ImplRenderHandler>(
@@ -23859,12 +23712,7 @@ mod impl_cef_render_handler_t {
         let arg_browser = arg_browser.as_mut();
         let arg_type_ = arg_type_.as_raw();
         let arg_dirty_rects_count = arg_dirty_rects_count.as_raw();
-        let arg_dirty_rects = if arg_dirty_rects.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_dirty_rects))
-        };
-        let arg_dirty_rects = arg_dirty_rects.as_ref().map(|arg| arg.as_ref());
+        let arg_dirty_rects = unsafe { arg_dirty_rects.cast::<Rect>().as_ref() };
         let arg_buffer = arg_buffer as *const _;
         let arg_width = arg_width.as_raw();
         let arg_height = arg_height.as_raw();
@@ -23895,18 +23743,8 @@ mod impl_cef_render_handler_t {
         let arg_browser = arg_browser.as_mut();
         let arg_type_ = arg_type_.as_raw();
         let arg_dirty_rects_count = arg_dirty_rects_count.as_raw();
-        let arg_dirty_rects = if arg_dirty_rects.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_dirty_rects))
-        };
-        let arg_dirty_rects = arg_dirty_rects.as_ref().map(|arg| arg.as_ref());
-        let arg_info = if arg_info.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<AcceleratedPaintInfo>::from(arg_info))
-        };
-        let arg_info = arg_info.as_ref().map(|arg| arg.as_ref());
+        let arg_dirty_rects = unsafe { arg_dirty_rects.cast::<Rect>().as_ref() };
+        let arg_info = unsafe { arg_info.cast::<AcceleratedPaintInfo>().as_ref() };
         let result = ImplRenderHandler::on_accelerated_paint(
             &arg_self_.interface,
             arg_browser,
@@ -23929,12 +23767,7 @@ mod impl_cef_render_handler_t {
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
         let arg_orientation = arg_orientation.as_raw();
-        let mut arg_size = if arg_size.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Size>::from(arg_size))
-        };
-        let arg_size = arg_size.as_mut().map(|arg| arg.as_mut());
+        let arg_size = unsafe { arg_size.cast::<Size>().as_mut() };
         let result = ImplRenderHandler::get_touch_handle_size(
             &arg_self_.interface,
             arg_browser,
@@ -23952,12 +23785,7 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_state = if arg_state.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<TouchHandleState>::from(arg_state))
-        };
-        let arg_state = arg_state.as_ref().map(|arg| arg.as_ref());
+        let arg_state = unsafe { arg_state.cast::<TouchHandleState>().as_ref() };
         let result = ImplRenderHandler::on_touch_handle_state_changed(
             &arg_self_.interface,
             arg_browser,
@@ -24052,19 +23880,9 @@ mod impl_cef_render_handler_t {
         let mut arg_browser =
             unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser = arg_browser.as_mut();
-        let arg_selected_range = if arg_selected_range.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Range>::from(arg_selected_range))
-        };
-        let arg_selected_range = arg_selected_range.as_ref().map(|arg| arg.as_ref());
+        let arg_selected_range = unsafe { arg_selected_range.cast::<Range>().as_ref() };
         let arg_character_bounds_count = arg_character_bounds_count.as_raw();
-        let arg_character_bounds = if arg_character_bounds.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_character_bounds))
-        };
-        let arg_character_bounds = arg_character_bounds.as_ref().map(|arg| arg.as_ref());
+        let arg_character_bounds = unsafe { arg_character_bounds.cast::<Rect>().as_ref() };
         let result = ImplRenderHandler::on_ime_composition_range_changed(
             &arg_self_.interface,
             arg_browser,
@@ -24091,12 +23909,7 @@ mod impl_cef_render_handler_t {
             Some(arg_selected_text.into())
         };
         let arg_selected_text = arg_selected_text.as_ref();
-        let arg_selected_range = if arg_selected_range.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Range>::from(arg_selected_range))
-        };
-        let arg_selected_range = arg_selected_range.as_ref().map(|arg| arg.as_ref());
+        let arg_selected_range = unsafe { arg_selected_range.cast::<Range>().as_ref() };
         let result = ImplRenderHandler::on_text_selection_changed(
             &arg_self_.interface,
             arg_browser,
@@ -25338,14 +25151,8 @@ mod impl_cef_resource_handler_t {
         let mut arg_request =
             unsafe { arg_request.as_mut() }.map(|arg| Request(unsafe { RefGuard::from_raw(arg) }));
         let arg_request = arg_request.as_mut();
-        let mut arg_handle_request = if arg_handle_request.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_handle_request,
-            ))
-        };
-        let arg_handle_request = arg_handle_request.as_mut().map(|arg| arg.as_mut());
+        let arg_handle_request =
+            unsafe { arg_handle_request.cast::<::std::os::raw::c_int>().as_mut() };
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| Callback(unsafe { RefGuard::from_raw(arg) }));
         let arg_callback = arg_callback.as_mut();
@@ -25386,12 +25193,7 @@ mod impl_cef_resource_handler_t {
         let mut arg_response = unsafe { arg_response.as_mut() }
             .map(|arg| Response(unsafe { RefGuard::from_raw(arg) }));
         let arg_response = arg_response.as_mut();
-        let mut arg_response_length = if arg_response_length.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<i64>::from(arg_response_length))
-        };
-        let arg_response_length = arg_response_length.as_mut().map(|arg| arg.as_mut());
+        let arg_response_length = unsafe { arg_response_length.cast::<i64>().as_mut() };
         let mut arg_redirect_url = if arg_redirect_url.is_null() {
             None
         } else {
@@ -25415,12 +25217,7 @@ mod impl_cef_resource_handler_t {
             (self_, bytes_to_skip, bytes_skipped, callback);
         let arg_self_: &RcImpl<_, I> = RcImpl::get(arg_self_);
         let arg_bytes_to_skip = arg_bytes_to_skip.as_raw();
-        let mut arg_bytes_skipped = if arg_bytes_skipped.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<i64>::from(arg_bytes_skipped))
-        };
-        let arg_bytes_skipped = arg_bytes_skipped.as_mut().map(|arg| arg.as_mut());
+        let arg_bytes_skipped = unsafe { arg_bytes_skipped.cast::<i64>().as_mut() };
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| ResourceSkipCallback(unsafe { RefGuard::from_raw(arg) }));
         let arg_callback = arg_callback.as_mut();
@@ -25444,12 +25241,7 @@ mod impl_cef_resource_handler_t {
         let arg_self_: &RcImpl<_, I> = RcImpl::get(arg_self_);
         let arg_data_out = arg_data_out as *mut _;
         let arg_bytes_to_read = arg_bytes_to_read.as_raw();
-        let mut arg_bytes_read = if arg_bytes_read.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(arg_bytes_read))
-        };
-        let arg_bytes_read = arg_bytes_read.as_mut().map(|arg| arg.as_mut());
+        let arg_bytes_read = unsafe { arg_bytes_read.cast::<::std::os::raw::c_int>().as_mut() };
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| ResourceReadCallback(unsafe { RefGuard::from_raw(arg) }));
         let arg_callback = arg_callback.as_mut();
@@ -25474,12 +25266,7 @@ mod impl_cef_resource_handler_t {
         let arg_self_: &RcImpl<_, I> = RcImpl::get(arg_self_);
         let arg_data_out = arg_data_out as *mut _;
         let arg_bytes_to_read = arg_bytes_to_read.as_raw();
-        let mut arg_bytes_read = if arg_bytes_read.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(arg_bytes_read))
-        };
-        let arg_bytes_read = arg_bytes_read.as_mut().map(|arg| arg.as_mut());
+        let arg_bytes_read = unsafe { arg_bytes_read.cast::<::std::os::raw::c_int>().as_mut() };
         let mut arg_callback = unsafe { arg_callback.as_mut() }
             .map(|arg| Callback(unsafe { RefGuard::from_raw(arg) }));
         let arg_callback = arg_callback.as_mut();
@@ -25844,23 +25631,13 @@ mod impl_cef_response_filter_t {
         });
         let mut vec_data_in = out_data_in.as_ref().map(|arg| arg.to_vec());
         let arg_data_in = vec_data_in.as_mut();
-        let mut arg_data_in_read = if arg_data_in_read.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<usize>::from(arg_data_in_read))
-        };
-        let arg_data_in_read = arg_data_in_read.as_mut().map(|arg| arg.as_mut());
+        let arg_data_in_read = unsafe { arg_data_in_read.cast::<usize>().as_mut() };
         let out_data_out = (!arg_data_out.is_null() && arg_data_out_size > 0).then(|| unsafe {
             std::slice::from_raw_parts_mut(arg_data_out as *mut _, arg_data_out_size)
         });
         let mut vec_data_out = out_data_out.as_ref().map(|arg| arg.to_vec());
         let arg_data_out = vec_data_out.as_mut();
-        let mut arg_data_out_written = if arg_data_out_written.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<usize>::from(arg_data_out_written))
-        };
-        let arg_data_out_written = arg_data_out_written.as_mut().map(|arg| arg.as_mut());
+        let arg_data_out_written = unsafe { arg_data_out_written.cast::<usize>().as_mut() };
         let result = ImplResponseFilter::filter(
             &arg_self_.interface,
             arg_data_in,
@@ -26365,14 +26142,11 @@ mod impl_cef_resource_request_handler_t {
         let mut arg_request =
             unsafe { arg_request.as_mut() }.map(|arg| Request(unsafe { RefGuard::from_raw(arg) }));
         let arg_request = arg_request.as_mut();
-        let mut arg_allow_os_execution = if arg_allow_os_execution.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_allow_os_execution,
-            ))
+        let arg_allow_os_execution = unsafe {
+            arg_allow_os_execution
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_allow_os_execution = arg_allow_os_execution.as_mut().map(|arg| arg.as_mut());
         let result = ImplResourceRequestHandler::on_protocol_execution(
             &arg_self_.interface,
             arg_browser,
@@ -26882,12 +26656,7 @@ mod impl_cef_cookie_access_filter_t {
         let mut arg_request =
             unsafe { arg_request.as_mut() }.map(|arg| Request(unsafe { RefGuard::from_raw(arg) }));
         let arg_request = arg_request.as_mut();
-        let arg_cookie = if arg_cookie.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Cookie>::from(arg_cookie))
-        };
-        let arg_cookie = arg_cookie.as_ref().map(|arg| arg.as_ref());
+        let arg_cookie = unsafe { arg_cookie.cast::<Cookie>().as_ref() };
         let result = ImplCookieAccessFilter::can_send_cookie(
             &arg_self_.interface,
             arg_browser,
@@ -26920,12 +26689,7 @@ mod impl_cef_cookie_access_filter_t {
         let mut arg_response = unsafe { arg_response.as_mut() }
             .map(|arg| Response(unsafe { RefGuard::from_raw(arg) }));
         let arg_response = arg_response.as_mut();
-        let arg_cookie = if arg_cookie.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Cookie>::from(arg_cookie))
-        };
-        let arg_cookie = arg_cookie.as_ref().map(|arg| arg.as_ref());
+        let arg_cookie = unsafe { arg_cookie.cast::<Cookie>().as_ref() };
         let result = ImplCookieAccessFilter::can_save_cookie(
             &arg_self_.interface,
             arg_browser,
@@ -27561,16 +27325,11 @@ mod impl_cef_request_handler_t {
             Some(arg_request_initiator.into())
         };
         let arg_request_initiator = arg_request_initiator.as_ref();
-        let mut arg_disable_default_handling = if arg_disable_default_handling.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_disable_default_handling,
-            ))
+        let arg_disable_default_handling = unsafe {
+            arg_disable_default_handling
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_disable_default_handling = arg_disable_default_handling
-            .as_mut()
-            .map(|arg| arg.as_mut());
         let result = ImplRequestHandler::get_resource_request_handler(
             &arg_self_.interface,
             arg_browser,
@@ -29555,16 +29314,11 @@ mod impl_cef_request_context_handler_t {
             Some(arg_request_initiator.into())
         };
         let arg_request_initiator = arg_request_initiator.as_ref();
-        let mut arg_disable_default_handling = if arg_disable_default_handling.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_disable_default_handling,
-            ))
+        let arg_disable_default_handling = unsafe {
+            arg_disable_default_handling
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_disable_default_handling = arg_disable_default_handling
-            .as_mut()
-            .map(|arg| arg.as_mut());
         let result = ImplRequestContextHandler::get_resource_request_handler(
             &arg_self_.interface,
             arg_browser,
@@ -35257,12 +35011,7 @@ mod impl_cef_view_delegate_t {
         let mut arg_view =
             unsafe { arg_view.as_mut() }.map(|arg| View(unsafe { RefGuard::from_raw(arg) }));
         let arg_view = arg_view.as_mut();
-        let arg_new_bounds = if arg_new_bounds.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_new_bounds))
-        };
-        let arg_new_bounds = arg_new_bounds.as_ref().map(|arg| arg.as_ref());
+        let arg_new_bounds = unsafe { arg_new_bounds.cast::<Rect>().as_ref() };
         let result =
             ImplViewDelegate::on_layout_changed(&arg_self_.interface, arg_view, arg_new_bounds);
     }
@@ -37605,12 +37354,7 @@ mod impl_cef_menu_button_delegate_t {
         let mut arg_menu_button = unsafe { arg_menu_button.as_mut() }
             .map(|arg| MenuButton(unsafe { RefGuard::from_raw(arg) }));
         let arg_menu_button = arg_menu_button.as_mut();
-        let arg_screen_point = if arg_screen_point.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Point>::from(arg_screen_point))
-        };
-        let arg_screen_point = arg_screen_point.as_ref().map(|arg| arg.as_ref());
+        let arg_screen_point = unsafe { arg_screen_point.cast::<Point>().as_ref() };
         let mut arg_button_pressed_lock = unsafe { arg_button_pressed_lock.as_mut() }
             .map(|arg| MenuButtonPressedLock(unsafe { RefGuard::from_raw(arg) }));
         let arg_button_pressed_lock = arg_button_pressed_lock.as_mut();
@@ -38232,12 +37976,7 @@ mod impl_cef_textfield_delegate_t {
         let mut arg_textfield = unsafe { arg_textfield.as_mut() }
             .map(|arg| Textfield(unsafe { RefGuard::from_raw(arg) }));
         let arg_textfield = arg_textfield.as_mut();
-        let arg_event = if arg_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<KeyEvent>::from(arg_event))
-        };
-        let arg_event = arg_event.as_ref().map(|arg| arg.as_ref());
+        let arg_event = unsafe { arg_event.cast::<KeyEvent>().as_ref() };
         let result =
             ImplTextfieldDelegate::on_key_event(&arg_self_.interface, arg_textfield, arg_event);
         result.into()
@@ -39277,12 +39016,7 @@ mod impl_cef_browser_view_delegate_t {
         let mut arg_browser_view = unsafe { arg_browser_view.as_mut() }
             .map(|arg| BrowserView(unsafe { RefGuard::from_raw(arg) }));
         let arg_browser_view = arg_browser_view.as_mut();
-        let arg_settings = if arg_settings.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<BrowserSettings>::from(arg_settings))
-        };
-        let arg_settings = arg_settings.as_ref().map(|arg| arg.as_ref());
+        let arg_settings = unsafe { arg_settings.cast::<BrowserSettings>().as_ref() };
         let mut arg_client =
             unsafe { arg_client.as_mut() }.map(|arg| Client(unsafe { RefGuard::from_raw(arg) }));
         let arg_client = arg_client.as_mut();
@@ -41726,12 +41460,7 @@ mod impl_cef_window_delegate_t {
         let mut arg_window =
             unsafe { arg_window.as_mut() }.map(|arg| Window(unsafe { RefGuard::from_raw(arg) }));
         let arg_window = arg_window.as_mut();
-        let arg_new_bounds = if arg_new_bounds.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect>::from(arg_new_bounds))
-        };
-        let arg_new_bounds = arg_new_bounds.as_ref().map(|arg| arg.as_ref());
+        let arg_new_bounds = unsafe { arg_new_bounds.cast::<Rect>().as_ref() };
         let result = ImplWindowDelegate::on_window_bounds_changed(
             &arg_self_.interface,
             arg_window,
@@ -41767,20 +41496,12 @@ mod impl_cef_window_delegate_t {
         let mut arg_window =
             unsafe { arg_window.as_mut() }.map(|arg| Window(unsafe { RefGuard::from_raw(arg) }));
         let arg_window = arg_window.as_mut();
-        let mut arg_is_menu = if arg_is_menu.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(arg_is_menu))
+        let arg_is_menu = unsafe { arg_is_menu.cast::<::std::os::raw::c_int>().as_mut() };
+        let arg_can_activate_menu = unsafe {
+            arg_can_activate_menu
+                .cast::<::std::os::raw::c_int>()
+                .as_mut()
         };
-        let arg_is_menu = arg_is_menu.as_mut().map(|arg| arg.as_mut());
-        let mut arg_can_activate_menu = if arg_can_activate_menu.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<::std::os::raw::c_int>::from(
-                arg_can_activate_menu,
-            ))
-        };
-        let arg_can_activate_menu = arg_can_activate_menu.as_mut().map(|arg| arg.as_mut());
         let result = ImplWindowDelegate::get_parent_window(
             &arg_self_.interface,
             arg_window,
@@ -41862,12 +41583,7 @@ mod impl_cef_window_delegate_t {
         let mut arg_window =
             unsafe { arg_window.as_mut() }.map(|arg| Window(unsafe { RefGuard::from_raw(arg) }));
         let arg_window = arg_window.as_mut();
-        let mut arg_titlebar_height = if arg_titlebar_height.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<f32>::from(arg_titlebar_height))
-        };
-        let arg_titlebar_height = arg_titlebar_height.as_mut().map(|arg| arg.as_mut());
+        let arg_titlebar_height = unsafe { arg_titlebar_height.cast::<f32>().as_mut() };
         let result = ImplWindowDelegate::get_titlebar_height(
             &arg_self_.interface,
             arg_window,
@@ -41960,12 +41676,7 @@ mod impl_cef_window_delegate_t {
         let mut arg_window =
             unsafe { arg_window.as_mut() }.map(|arg| Window(unsafe { RefGuard::from_raw(arg) }));
         let arg_window = arg_window.as_mut();
-        let arg_event = if arg_event.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<KeyEvent>::from(arg_event))
-        };
-        let arg_event = arg_event.as_ref().map(|arg| arg.as_ref());
+        let arg_event = unsafe { arg_event.cast::<KeyEvent>().as_ref() };
         let result = ImplWindowDelegate::on_key_event(&arg_self_.interface, arg_window, arg_event);
         result.into()
     }
@@ -42004,12 +41715,7 @@ mod impl_cef_window_delegate_t {
         let mut arg_window =
             unsafe { arg_window.as_mut() }.map(|arg| Window(unsafe { RefGuard::from_raw(arg) }));
         let arg_window = arg_window.as_mut();
-        let mut arg_properties = if arg_properties.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<LinuxWindowProperties>::from(arg_properties))
-        };
-        let arg_properties = arg_properties.as_mut().map(|arg| arg.as_mut());
+        let arg_properties = unsafe { arg_properties.cast::<LinuxWindowProperties>().as_mut() };
         let result = ImplWindowDelegate::get_linux_window_properties(
             &arg_self_.interface,
             arg_window,
