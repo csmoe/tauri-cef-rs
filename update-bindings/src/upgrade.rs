@@ -29,6 +29,17 @@ pub fn download(url: &str, target: &str, version: &str) -> PathBuf {
         .expect("extraction failed")
 }
 
+pub fn download_tt_cef(target: &str, version: &str) {
+    println!("use tt cef: download and extract");
+    let tt_version = download_cef::tt_cef::TTCefVersion::from(target, version);
+    let archive = tt_version
+        .download_archive(dirs::get_out_dir(), true)
+        .expect("download failed");
+    tt_version
+        .extract_target_archive(&archive, dirs::get_out_dir(), true)
+        .expect("extraction failed");
+}
+
 pub fn sys_bindgen(target: &str) -> crate::Result<()> {
     assert!(TARGETS.contains(&target), "unsupported target {target}");
     let (os, arch) = target_to_os_arch(target);

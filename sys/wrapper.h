@@ -2,8 +2,13 @@
 #define CEF_RUST_SYS_WRAPPER_H
 
 #ifdef __APPLE__
+//#include "include/cef_sandbox_mac.h"
 #include "include/wrapper/cef_library_loader.h"
-#include "include/cef_sandbox_mac.h"
+#endif
+
+#ifdef _WIN32
+//#include "include/cef_sandbox_win.h"
+#include "include/capi/cef_tt_util_capi.h"
 #endif
 
 #include "include/cef_api_hash.h"

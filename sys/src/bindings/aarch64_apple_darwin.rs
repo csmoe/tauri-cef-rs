@@ -8,29 +8,21 @@ pub const CEF_API_VERSION_13304: i32 = 13304;
 pub const CEF_API_VERSION_13400: i32 = 13400;
 pub const CEF_API_VERSION_13401: i32 = 13401;
 pub const CEF_API_VERSION_13500: i32 = 13500;
-pub const CEF_API_VERSION_13600: i32 = 13600;
-pub const CEF_API_VERSION_13601: i32 = 13601;
-pub const CEF_API_VERSION_13700: i32 = 13700;
-pub const CEF_API_VERSION_13800: i32 = 13800;
-pub const CEF_API_VERSION_13900: i32 = 13900;
-pub const CEF_API_VERSION_14000: i32 = 14000;
-pub const CEF_API_VERSION_14100: i32 = 14100;
-pub const CEF_API_VERSION_14200: i32 = 14200;
 pub const CEF_API_VERSION_999998: i32 = 999998;
 pub const CEF_API_VERSION_999999: i32 = 999999;
 pub const CEF_API_VERSION_MIN: i32 = 13300;
-pub const CEF_API_VERSION_LAST: i32 = 14200;
+pub const CEF_API_VERSION_LAST: i32 = 13500;
 pub const CEF_API_VERSION_EXPERIMENTAL: i32 = 999999;
 pub const CEF_API_VERSION_NEXT: i32 = 999998;
 pub const CEF_API_VERSION: i32 = 999999;
-pub const CEF_VERSION: &[u8; 41] = b"142.0.8+gaa285ed+chromium-142.0.7444.135\0";
-pub const CEF_VERSION_MAJOR: i32 = 142;
+pub const CEF_VERSION: &[u8; 50] = b"135.0.0-HEAD.3175+g9f79a66+chromium-135.0.7049.78\0";
+pub const CEF_VERSION_MAJOR: i32 = 135;
 pub const CEF_VERSION_MINOR: i32 = 0;
-pub const CEF_VERSION_PATCH: i32 = 8;
-pub const CHROME_VERSION_MAJOR: i32 = 142;
+pub const CEF_VERSION_PATCH: i32 = 0;
+pub const CHROME_VERSION_MAJOR: i32 = 135;
 pub const CHROME_VERSION_MINOR: i32 = 0;
-pub const CHROME_VERSION_BUILD: i32 = 7444;
-pub const CHROME_VERSION_PATCH: i32 = 135;
+pub const CHROME_VERSION_BUILD: i32 = 7049;
+pub const CHROME_VERSION_PATCH: i32 = 78;
 unsafe extern "C" {
     #[doc = "\n Load the CEF library at the specified |path|. Returns true (1) on\n success and false (0) on failure.\n"]
     pub fn cef_load_library(path: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
@@ -38,17 +30,6 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = "\n Unload the CEF library that was previously loaded. Returns true (1)\n on success and false (0) on failure.\n"]
     pub fn cef_unload_library() -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    #[doc = "\n Initialize the sandbox for this process. Returns the sandbox context\n handle on success or NULL on failure. The returned handle should be\n passed to cef_sandbox_destroy() immediately before process termination.\n"]
-    pub fn cef_sandbox_initialize(
-        argc: ::std::os::raw::c_int,
-        argv: *mut *mut ::std::os::raw::c_char,
-    ) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    #[doc = "\n Destroy the specified sandbox context handle.\n"]
-    pub fn cef_sandbox_destroy(sandbox_context: *mut ::std::os::raw::c_void);
 }
 unsafe extern "C" {
     #[doc = "\n Configures the CEF API version and returns API hashes for the libcef\n library. The returned string is owned by the library and should not be\n freed. The |version| parameter should be CEF_API_VERSION and any changes to\n this value will be ignored after the first call to this method. The |entry|\n parameter describes which hash value will be returned:\n\n 0 - CEF_API_HASH_PLATFORM\n 1 - CEF_API_HASH_UNIVERSAL (deprecated, same as CEF_API_HASH_PLATFORM)\n 2 - CEF_COMMIT_HASH (from cef_version.h)\n"]
@@ -545,11 +526,11 @@ unsafe extern "C" {
 #[doc = "\n Supported content setting types. Some types are platform-specific or only\n supported with Chrome style. Should be kept in sync with Chromium's\n ContentSettingsType type.\n"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum cef_content_setting_types_t {
-    #[doc = " This setting governs whether cookies are enabled by the user in the\n provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
+    #[doc = " provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
     CEF_CONTENT_SETTING_TYPE_COOKIES = 0,
-    #[doc = " This setting governs whether cookies are enabled by the user in the\n provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
+    #[doc = " provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
     CEF_CONTENT_SETTING_TYPE_IMAGES = 1,
-    #[doc = " This setting governs whether cookies are enabled by the user in the\n provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
+    #[doc = " provided context. However, it may be overridden by other settings. This\n enum should NOT be read directly to determine whether cookies are enabled;\n the client should instead rely on the CookieSettings API."]
     CEF_CONTENT_SETTING_TYPE_JAVASCRIPT = 2,
     #[doc = " This setting governs both popups and unwanted redirects like tab-unders\n and framebusting."]
     CEF_CONTENT_SETTING_TYPE_POPUPS = 3,
@@ -665,7 +646,8 @@ pub enum cef_content_setting_types_t {
     CEF_CONTENT_SETTING_TYPE_CAMERA_PAN_TILT_ZOOM = 58,
     #[doc = " Content setting for Screen Enumeration and Screen Detail functionality.\n Permits access to detailed multi-screen information, like size and\n position. Permits placing fullscreen and windowed content on specific\n screens. See also: https://w3c.github.io/window-placement"]
     CEF_CONTENT_SETTING_TYPE_WINDOW_MANAGEMENT = 59,
-    CEF_CONTENT_SETTING_TYPE_INSECURE_PRIVATE_NETWORK_DEPRECATED = 60,
+    #[doc = " Stores whether to allow insecure websites to make private network\n requests.\n See also: https://wicg.github.io/cors-rfc1918\n Set through enterprise policies only."]
+    CEF_CONTENT_SETTING_TYPE_INSECURE_PRIVATE_NETWORK = 60,
     #[doc = " Content setting which stores whether or not a site can access low-level\n locally installed font data using the Local Fonts Access API."]
     CEF_CONTENT_SETTING_TYPE_LOCAL_FONTS = 61,
     #[doc = " Stores per-origin state for permission auto-revocation (for all permission\n types)."]
@@ -698,11 +680,13 @@ pub enum cef_content_setting_types_t {
     CEF_CONTENT_SETTING_TYPE_REDUCED_ACCEPT_LANGUAGE = 75,
     #[doc = " Website setting which is used for NotificationPermissionReviewService to\n store origin blocklist from review notification permissions feature."]
     CEF_CONTENT_SETTING_TYPE_NOTIFICATION_PERMISSION_REVIEW = 76,
-    CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_GUARD_DEPRECATED = 77,
-    CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_CHOOSER_DATA_DEPRECATED = 78,
+    #[doc = " Website setting to store permissions granted to access particular devices\n in private network."]
+    CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_GUARD = 77,
+    #[doc = " Website setting to store permissions granted to access particular devices\n in private network."]
+    CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_CHOOSER_DATA = 78,
     #[doc = " Website setting which stores whether the browser has observed the user\n signing into an identity-provider based on observing the IdP-SignIn-Status\n HTTP header."]
     CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_IDENTITY_PROVIDER_SIGNIN_STATUS = 79,
-    #[doc = " Website setting which is used for RevokedPermissionsService to\n store revoked permissions of unused sites from unused site permissions\n feature."]
+    #[doc = " Website setting which is used for UnusedSitePermissionsService to\n store revoked permissions of unused sites from unused site permissions\n feature."]
     CEF_CONTENT_SETTING_TYPE_REVOKED_UNUSED_SITE_PERMISSIONS = 80,
     #[doc = " Similar to STORAGE_ACCESS, but applicable at the page-level rather than\n being specific to a frame."]
     CEF_CONTENT_SETTING_TYPE_TOP_LEVEL_STORAGE_ACCESS = 81,
@@ -728,7 +712,8 @@ pub enum cef_content_setting_types_t {
     CEF_CONTENT_SETTING_TYPE_TPCD_TRIAL = 91,
     #[doc = " Content Setting for 3PC accesses granted via top-level 3PC deprecation\n trial. Similar to TPCD_TRIAL, but applicable at the page-level for the\n lifetime of the page that served the token, rather than being specific to\n a requesting-origin/top-level-site combination and persistent."]
     CEF_CONTENT_SETTING_TYPE_TOP_LEVEL_TPCD_TRIAL = 92,
-    CEF_CONTENT_SETTING_TYPE_TOP_LEVEL_TPCD_ORIGIN_TRIAL = 93,
+    #[doc = " Content Setting for a first-party origin trial that allows websites to\n enable third-party cookie deprecation.\n ALLOW (default): no effect (e.g. third-party cookies allowed, if not\n                  blocked otherwise).\n BLOCK: third-party cookies blocked, but 3PCD mitigations enabled."]
+    CEF_CONTENT_SETTING_TOP_LEVEL_TPCD_ORIGIN_TRIAL = 93,
     #[doc = " Content setting used to indicate whether entering picture-in-picture\n automatically should be enabled."]
     CEF_CONTENT_SETTING_TYPE_AUTO_PICTURE_IN_PICTURE = 94,
     #[doc = " Whether user has opted into keeping file/directory permissions persistent\n between visits for a given origin. When enabled, permission metadata\n stored under |FILE_SYSTEM_ACCESS_CHOOSER_DATA| can auto-grant incoming\n permission request."]
@@ -755,7 +740,7 @@ pub enum cef_content_setting_types_t {
     CEF_CONTENT_SETTING_TYPE_KEYBOARD_LOCK = 105,
     #[doc = " Pointer Lock API allows a site to hide the cursor and have exclusive\n access to mouse inputs."]
     CEF_CONTENT_SETTING_TYPE_POINTER_LOCK = 106,
-    #[doc = " Website setting which is used for RevokedPermissionsService to store\n auto-revoked notification permissions from abusive sites."]
+    #[doc = " Website setting which is used for UnusedSitePermissionsService to store\n auto-revoked notification permissions from abusive sites."]
     CEF_CONTENT_SETTING_TYPE_REVOKED_ABUSIVE_NOTIFICATION_PERMISSIONS = 107,
     #[doc = " Content setting that controls tracking protection status per site.\n BLOCK: Protections enabled. This is the default state.\n ALLOW: Protections disabled."]
     CEF_CONTENT_SETTING_TYPE_TRACKING_PROTECTION = 108,
@@ -777,25 +762,9 @@ pub enum cef_content_setting_types_t {
     CEF_CONTENT_SETTING_TYPE_ARE_SUSPICIOUS_NOTIFICATIONS_ALLOWLISTED_BY_USER = 116,
     #[doc = " Content settings for access to the Controlled Frame API."]
     CEF_CONTENT_SETTING_TYPE_CONTROLLED_FRAME = 117,
-    #[doc = " Website setting which is used for RevokedPermissionsService to\n store revoked notification permissions of disruptive sites."]
+    #[doc = " Website setting which is used for UnusedSitePermissionsService to\n store revoked notification permissions of disruptive sites."]
     CEF_CONTENT_SETTING_TYPE_REVOKED_DISRUPTIVE_NOTIFICATION_PERMISSIONS = 118,
-    #[doc = " Content setting for whether the site is allowed to make local network\n requests."]
-    CEF_CONTENT_SETTING_TYPE_LOCAL_NETWORK_ACCESS = 119,
-    #[doc = " Stores information on-device language packs for which a site has\n installed using the Web Speech API."]
-    CEF_CONTENT_SETTING_TYPE_ON_DEVICE_SPEECH_RECOGNITION_LANGUAGES_DOWNLOADED = 120,
-    #[doc = " Stores which Translator API language packs the site has initialized."]
-    CEF_CONTENT_SETTING_TYPE_INITIALIZED_TRANSLATIONS = 121,
-    #[doc = " Stores a list of notification ids where content detection found the\n notification to be suspicious and a warning has already been shown for the\n site. Used for recovering notification contents from the database if the\n user decides they would like to see all of these notifications."]
-    CEF_CONTENT_SETTING_TYPE_SUSPICIOUS_NOTIFICATION_IDS = 122,
-    #[doc = " To support approximate geolocation, the permission is migrating to use\n permissions with options, which won't be stored as ContentSettings. Upon\n launch of the feature, GEOLOCATION and GEOLOCATION_WITH_OPTIONS should be\n merged."]
-    CEF_CONTENT_SETTING_TYPE_GEOLOCATION_WITH_OPTIONS = 123,
-    #[doc = " Setting for enabling the Device Attributes API. Spec link:\n https://wicg.github.io/WebApiDevice/device_attributes/"]
-    CEF_CONTENT_SETTING_TYPE_DEVICE_ATTRIBUTES = 124,
-    #[doc = " Stores per-origin state for permission heuristics. Currently used for\n auto-granting geolocation element permission request after repeated\n temporary grants."]
-    CEF_CONTENT_SETTING_TYPE_PERMISSION_ACTIONS_HISTORY = 125,
-    #[doc = " Website setting to indicate whether the user has selected \"show original\"\n when suspicious warning is shown. If the user has selected this, the\n notification permission will not be revoked based on suspicious verdict."]
-    CEF_CONTENT_SETTING_TYPE_SUSPICIOUS_NOTIFICATION_SHOW_ORIGINAL = 126,
-    CEF_CONTENT_SETTING_TYPE_NUM_VALUES = 127,
+    CEF_CONTENT_SETTING_TYPE_NUM_VALUES = 119,
 }
 #[repr(u32)]
 #[non_exhaustive]
@@ -807,7 +776,7 @@ pub enum cef_content_setting_values_t {
     CEF_CONTENT_SETTING_VALUE_BLOCK = 2,
     CEF_CONTENT_SETTING_VALUE_ASK = 3,
     CEF_CONTENT_SETTING_VALUE_SESSION_ONLY = 4,
-    CEF_CONTENT_SETTING_VALUE_DETECT_IMPORTANT_CONTENT_DEPRECATED = 5,
+    CEF_CONTENT_SETTING_VALUE_DETECT_IMPORTANT_CONTENT = 5,
     CEF_CONTENT_SETTING_VALUE_NUM_VALUES = 6,
 }
 #[doc = "\n Structure representing a point.\n"]
@@ -1359,7 +1328,8 @@ pub struct _cef_browser_settings_t {
     pub tab_to_links: cef_state_t,
     #[doc = "\n Controls whether local storage can be used. Also configurable using the\n \"disable-local-storage\" command-line switch.\n"]
     pub local_storage: cef_state_t,
-    pub databases_deprecated: cef_state_t,
+    #[doc = "\n Controls whether databases can be used. Also configurable using the\n \"disable-databases\" command-line switch.\n"]
+    pub databases: cef_state_t,
     #[doc = "\n Controls whether WebGL can be used. Note that WebGL requires hardware\n support and may not work on all systems even when enabled. Also\n configurable using the \"disable-webgl\" command-line switch.\n"]
     pub webgl: cef_state_t,
     #[doc = "\n Background color used for the browser before a document is loaded and when\n no document color is specified. The alpha component must be either fully\n opaque (0xFF) or fully transparent (0x00). If the alpha component is fully\n opaque then the RGB components will be used as the background color. If\n the alpha component is fully transparent for a windowed browser then the\n CefSettings.background_color value will be used. If the alpha component is\n fully transparent for a windowless (off-screen) browser then transparent\n painting will be enabled.\n"]
@@ -1423,8 +1393,8 @@ const _: () = {
         [::std::mem::offset_of!(_cef_browser_settings_t, tab_to_links) - 232usize];
     ["Offset of field: _cef_browser_settings_t::local_storage"]
         [::std::mem::offset_of!(_cef_browser_settings_t, local_storage) - 236usize];
-    ["Offset of field: _cef_browser_settings_t::databases_deprecated"]
-        [::std::mem::offset_of!(_cef_browser_settings_t, databases_deprecated) - 240usize];
+    ["Offset of field: _cef_browser_settings_t::databases"]
+        [::std::mem::offset_of!(_cef_browser_settings_t, databases) - 240usize];
     ["Offset of field: _cef_browser_settings_t::webgl"]
         [::std::mem::offset_of!(_cef_browser_settings_t, webgl) - 244usize];
     ["Offset of field: _cef_browser_settings_t::background_color"]
@@ -1672,6 +1642,7 @@ pub enum cef_errorcode_t {
     ERR_BLOCKED_BY_RESPONSE = -27,
     ERR_CLEARTEXT_NOT_PERMITTED = -29,
     ERR_BLOCKED_BY_CSP = -30,
+    ERR_H2_OR_QUIC_REQUIRED = -31,
     ERR_BLOCKED_BY_ORB = -32,
     ERR_NETWORK_ACCESS_REVOKED = -33,
     ERR_BLOCKED_BY_FINGERPRINTING_PROTECTION = -34,
@@ -1747,7 +1718,6 @@ pub enum cef_errorcode_t {
     ERR_INVALID_ECH_CONFIG_LIST = -182,
     ERR_ECH_NOT_NEGOTIATED = -183,
     ERR_ECH_FALLBACK_CERTIFICATE_INVALID = -184,
-    ERR_PROXY_UNABLE_TO_CONNECT_TO_DESTINATION = -186,
     ERR_CERT_COMMON_NAME_INVALID = -200,
     ERR_CERT_DATE_INVALID = -201,
     ERR_CERT_AUTHORITY_INVALID = -202,
@@ -1762,6 +1732,7 @@ pub enum cef_errorcode_t {
     ERR_CERT_NAME_CONSTRAINT_VIOLATION = -212,
     ERR_CERT_VALIDITY_TOO_LONG = -213,
     ERR_CERTIFICATE_TRANSPARENCY_REQUIRED = -214,
+    ERR_CERT_SYMANTEC_LEGACY = -215,
     ERR_CERT_KNOWN_INTERCEPTION_BLOCKED = -217,
     ERR_CERT_SELF_SIGNED_LOCAL_NETWORK = -219,
     ERR_CERT_END = -220,
@@ -1853,6 +1824,7 @@ pub enum cef_errorcode_t {
     ERR_INVALID_WEB_BUNDLE = -505,
     ERR_TRUST_TOKEN_OPERATION_FAILED = -506,
     ERR_TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST = -507,
+    ERR_TTNET_TRAFFIC_CONTROL_DROP = -555,
     ERR_PKCS12_IMPORT_BAD_PASSWORD = -701,
     ERR_PKCS12_IMPORT_FAILED = -702,
     ERR_IMPORT_CA_CERT_NOT_CA = -703,
@@ -1879,13 +1851,6 @@ pub enum cef_errorcode_t {
     ERR_DNS_REQUEST_CANCELLED = -810,
     ERR_DNS_NO_MATCHING_SUPPORTED_ALPN = -811,
     ERR_DNS_SECURE_PROBE_RECORD_INVALID = -814,
-    ERR_BLOB_INVALID_CONSTRUCTION_ARGUMENTS = -900,
-    ERR_BLOB_OUT_OF_MEMORY = -901,
-    ERR_BLOB_FILE_WRITE_FAILED = -902,
-    ERR_BLOB_SOURCE_DIED_IN_TRANSIT = -903,
-    ERR_BLOB_DEREFERENCED_WHILE_BUILDING = -904,
-    ERR_BLOB_REFERENCED_BLOB_BROKEN = -905,
-    ERR_BLOB_REFERENCED_FILE_UNAVAILABLE = -906,
 }
 #[repr(u32)]
 #[non_exhaustive]
@@ -1931,8 +1896,6 @@ pub enum cef_resultcode_t {
     CEF_RESULT_CODE_GPU_DEAD_ON_ARRIVAL = 4,
     #[doc = " The GPU process exited because initialization failed."]
     CEF_RESULT_CODE_CHROME_FIRST = 5,
-    #[doc = " The process is of an unknown type."]
-    CEF_RESULT_CODE_BAD_PROCESS_TYPE = 6,
     #[doc = " A critical chrome file is missing."]
     CEF_RESULT_CODE_MISSING_DATA = 7,
     #[doc = " Command line parameter is not supported."]
@@ -1953,11 +1916,9 @@ pub enum cef_resultcode_t {
     CEF_RESULT_CODE_NORMAL_EXIT_PACK_EXTENSION_SUCCESS = 36,
     #[doc = " The browser process exited because system resources are exhausted. The\n system state can't be recovered and will be unstable."]
     CEF_RESULT_CODE_SYSTEM_RESOURCE_EXHAUSTED = 37,
-    #[doc = " The browser process exited because it was re-launched without elevation."]
-    CEF_RESULT_CODE_NORMAL_EXIT_AUTO_DE_ELEVATED = 38,
-    #[doc = " Upon encountering a commit failure in a process, PartitionAlloc terminated\n another process deemed less important."]
-    CEF_RESULT_CODE_TERMINATED_BY_OTHER_PROCESS_ON_COMMIT_FAILURE = 39,
-    CEF_RESULT_CODE_CHROME_LAST = 40,
+    #[doc = " The browser process exited because system resources are exhausted. The\n system state can't be recovered and will be unstable."]
+    CEF_RESULT_CODE_CHROME_LAST = 38,
+    #[doc = " The browser process exited because system resources are exhausted. The\n system state can't be recovered and will be unstable."]
     CEF_RESULT_CODE_SANDBOX_FATAL_FIRST = 7006,
     #[doc = " Windows sandbox could not lower the token."]
     CEF_RESULT_CODE_SANDBOX_FATAL_DROPTOKEN = 7007,
@@ -2090,7 +2051,7 @@ pub enum cef_postdataelement_type_t {
     PDE_TYPE_EMPTY = 0,
     PDE_TYPE_BYTES = 1,
     PDE_TYPE_FILE = 2,
-    PDE_TYPE_NUM_VALUES = 3,
+    PDF_TYPE_NUM_VALUES = 3,
 }
 #[repr(u32)]
 #[non_exhaustive]
@@ -3818,24 +3779,18 @@ pub enum cef_chrome_page_action_icon_type_t {
     CEF_CPAIT_OPTIMIZATION_GUIDE = 31,
     CEF_CPAIT_COLLABORATION_MESSAGING = 32,
     CEF_CPAIT_CHANGE_PASSWORD = 33,
-    CEF_CPAIT_LENS_OVERLAY_HOMEWORK = 34,
-    CEF_CPAIT_AI_MODE = 35,
-    CEF_CPAIT_NUM_VALUES = 36,
+    CEF_CPAIT_NUM_VALUES = 34,
 }
 #[repr(u32)]
 #[non_exhaustive]
 #[doc = "\n Chrome toolbar button types. Should be kept in sync with CEF's internal\n ToolbarButtonType type.\n"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum cef_chrome_toolbar_button_type_t {
-    CEF_CTBT_CAST_DEPRECATED = 0,
-    CEF_CTBT_DOWNLOAD_DEPRECATED = 1,
-    CEF_CTBT_SEND_TAB_TO_SELF_DEPRECATED = 2,
-    CEF_CTBT_SIDE_PANEL_DEPRECATED = 3,
-    CEF_CTBT_MEDIA = 4,
-    CEF_CTBT_TAB_SEARCH = 5,
-    CEF_CTBT_BATTERY_SAVER = 6,
-    CEF_CTBT_AVATAR = 7,
-    CEF_CTBT_NUM_VALUES = 8,
+    CEF_CTBT_CAST = 0,
+    CEF_CTBT_DOWNLOAD = 1,
+    CEF_CTBT_SEND_TAB_TO_SELF = 2,
+    CEF_CTBT_SIDE_PANEL = 3,
+    CEF_CTBT_NUM_VALUES = 4,
 }
 #[repr(u32)]
 #[non_exhaustive]
@@ -3965,7 +3920,6 @@ pub enum cef_permission_request_types_t {
     CEF_PERMISSION_TYPE_WEB_APP_INSTALLATION = 4194304,
     CEF_PERMISSION_TYPE_WINDOW_MANAGEMENT = 8388608,
     CEF_PERMISSION_TYPE_FILE_SYSTEM_ACCESS = 16777216,
-    CEF_PERMISSION_TYPE_LOCAL_NETWORK_ACCESS = 33554432,
 }
 #[repr(u32)]
 #[non_exhaustive]
@@ -4125,7 +4079,8 @@ pub enum cef_task_type_t {
     CEF_TASK_TYPE_EXTENSION = 6,
     #[doc = " A browser plugin guest process."]
     CEF_TASK_TYPE_GUEST = 7,
-    CEF_TASK_TYPE_PLUGIN_DEPRECATED = 8,
+    #[doc = " A plugin process."]
+    CEF_TASK_TYPE_PLUGIN = 8,
     #[doc = " A sandbox helper process"]
     CEF_TASK_TYPE_SANDBOX_HELPER = 9,
     #[doc = " A dedicated worker running on the renderer process."]
@@ -6970,7 +6925,7 @@ const _: () = {
 #[doc = "\n Structure used for managing cookies. The functions of this structure may be\n called on any thread unless otherwise indicated.\n\n NOTE: This struct is allocated DLL-side.\n"]
 pub type cef_cookie_manager_t = _cef_cookie_manager_t;
 unsafe extern "C" {
-    #[doc = "\n Returns the global cookie manager. By default data will be stored at\n cef_settings_t.cache_path if specified or in memory otherwise. If |callback|\n is non-NULL it will be executed asnychronously on the UI thread after the\n manager's storage has been initialized. Using this function is equivalent to\n calling cef_request_context_t::cef_request_context_get_global_context()->Get\n DefaultCookieManager().\n"]
+    #[doc = "\n Returns the global cookie manager. By default data will be stored at\n cef_settings_t.cache_path if specified or in memory otherwise. If |callback|\n is non-NULL it will be executed asnychronously on the UI thread after the\n manager's storage has been initialized. Using this function is equivalent to\n calling cef_request_context_t::cef_request_context_get_global_context()-\n >GetDefaultCookieManager().\n"]
     pub fn cef_cookie_manager_get_global_manager(
         callback: *mut _cef_completion_callback_t,
     ) -> *mut cef_cookie_manager_t;
@@ -7114,7 +7069,7 @@ const _: () = {
 #[doc = "\n Supports discovery of and communication with media devices on the local\n network via the Cast and DIAL protocols. The functions of this structure may\n be called on any browser process thread unless otherwise indicated.\n\n NOTE: This struct is allocated DLL-side.\n"]
 pub type cef_media_router_t = _cef_media_router_t;
 unsafe extern "C" {
-    #[doc = "\n Returns the MediaRouter object associated with the global request context.\n If |callback| is non-NULL it will be executed asnychronously on the UI\n thread after the manager's storage has been initialized. Equivalent to\n calling cef_request_context_t::cef_request_context_get_global_context()->get\n _media_router().\n"]
+    #[doc = "\n Returns the MediaRouter object associated with the global request context.\n If |callback| is non-NULL it will be executed asnychronously on the UI\n thread after the manager's storage has been initialized. Equivalent to\n calling cef_request_context_t::cef_request_context_get_global_context()-\n >get_media_router().\n"]
     pub fn cef_media_router_get_global(
         callback: *mut _cef_completion_callback_t,
     ) -> *mut cef_media_router_t;
@@ -8262,7 +8217,7 @@ pub struct _cef_browser_host_t {
     pub was_hidden: ::std::option::Option<
         unsafe extern "C" fn(self_: *mut _cef_browser_host_t, hidden: ::std::os::raw::c_int),
     >,
-    #[doc = "\n Notify the browser that screen information has changed. Updated\n information will be sent to the renderer process to configure screen size\n and position values used by CSS and JavaScript (window.deviceScaleFactor,\n window.screenX/Y, window.outerWidth/Height, etc.). For background see\n https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage.md#markdown-\n header-coordinate-systems\n\n This function is used with (a) windowless rendering and (b) windowed\n rendering with external (client-provided) root window.\n\n With windowless rendering the browser will call\n cef_render_handler_t::GetScreenInfo,\n cef_render_handler_t::GetRootScreenRect and\n cef_render_handler_t::GetViewRect. This simulates moving or resizing the\n root window in the current display, moving the root window from one\n display to another, or changing the properties of the current display.\n\n With windowed rendering the browser will call\n cef_display_handler_t::GetRootWindowScreenRect and use the associated\n display properties.\n"]
+    #[doc = "\n Send a notification to the browser that the screen info has changed. The\n browser will then call cef_render_handler_t::GetScreenInfo to update the\n screen information with the new values. This simulates moving the webview\n window from one display to another, or changing the properties of the\n current display. This function is only used when window rendering is\n disabled.\n"]
     pub notify_screen_info_changed:
         ::std::option::Option<unsafe extern "C" fn(self_: *mut _cef_browser_host_t)>,
     #[doc = "\n Invalidate the view. The browser will call cef_render_handler_t::OnPaint\n asynchronously. This function is only used when window rendering is\n disabled.\n"]
@@ -9818,7 +9773,7 @@ pub struct _cef_display_handler_t {
             line: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >,
-    #[doc = "\n Called when auto-resize is enabled via\n cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-\n resized. |new_size| will be the desired size in DIP coordinates. Return\n true (1) if the resize was handled or false (0) for default handling.\n"]
+    #[doc = "\n Called when auto-resize is enabled via\n cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-\n resized. |new_size| will be the desired size in view coordinates. Return\n true (1) if the resize was handled or false (0) for default handling.\n"]
     pub on_auto_resize: ::std::option::Option<
         unsafe extern "C" fn(
             self_: *mut _cef_display_handler_t,
@@ -9853,26 +9808,10 @@ pub struct _cef_display_handler_t {
             has_audio_access: ::std::os::raw::c_int,
         ),
     >,
-    #[doc = "\n Called when JavaScript is requesting new bounds via window.moveTo/By() or\n window.resizeTo/By(). |new_bounds| are in DIP screen coordinates.\n\n With Views-hosted browsers |new_bounds| are the desired bounds for the\n containing cef_window_t and may be passed directly to\n cef_window_t::SetBounds. With external (client-provided) parent on macOS\n and Windows |new_bounds| are the desired frame bounds for the containing\n root window. With other non-Views browsers |new_bounds| are the desired\n bounds for the browser content only unless the client implements either\n cef_display_handler_t::GetRootWindowScreenRect for windowed browsers or\n cef_render_handler_t::GetWindowScreenRect for windowless browsers. Clients\n may expand browser content bounds to window bounds using OS-specific or\n cef_display_t functions.\n\n Return true (1) if this function was handled or false (0) for default\n handling. Default move/resize behavior is only provided with Views-hosted\n Chrome style browsers.\n"]
-    pub on_contents_bounds_change: ::std::option::Option<
-        unsafe extern "C" fn(
-            self_: *mut _cef_display_handler_t,
-            browser: *mut _cef_browser_t,
-            new_bounds: *const cef_rect_t,
-        ) -> ::std::os::raw::c_int,
-    >,
-    #[doc = "\n Called to retrieve the external (client-provided) root window rectangle in\n screen DIP coordinates. Only called for windowed browsers on Windows and\n Linux. Return true (1) if the rectangle was provided. Return false (0) to\n use the root window bounds on Windows or the browser content bounds on\n Linux. For additional usage details see\n cef_browser_host_t::NotifyScreenInfoChanged.\n"]
-    pub get_root_window_screen_rect: ::std::option::Option<
-        unsafe extern "C" fn(
-            self_: *mut _cef_display_handler_t,
-            browser: *mut _cef_browser_t,
-            rect: *mut cef_rect_t,
-        ) -> ::std::os::raw::c_int,
-    >,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of _cef_display_handler_t"][::std::mem::size_of::<_cef_display_handler_t>() - 144usize];
+    ["Size of _cef_display_handler_t"][::std::mem::size_of::<_cef_display_handler_t>() - 128usize];
     ["Alignment of _cef_display_handler_t"]
         [::std::mem::align_of::<_cef_display_handler_t>() - 8usize];
     ["Offset of field: _cef_display_handler_t::base"]
@@ -9899,10 +9838,6 @@ const _: () = {
         [::std::mem::offset_of!(_cef_display_handler_t, on_cursor_change) - 112usize];
     ["Offset of field: _cef_display_handler_t::on_media_access_change"]
         [::std::mem::offset_of!(_cef_display_handler_t, on_media_access_change) - 120usize];
-    ["Offset of field: _cef_display_handler_t::on_contents_bounds_change"]
-        [::std::mem::offset_of!(_cef_display_handler_t, on_contents_bounds_change) - 128usize];
-    ["Offset of field: _cef_display_handler_t::get_root_window_screen_rect"]
-        [::std::mem::offset_of!(_cef_display_handler_t, get_root_window_screen_rect) - 136usize];
 };
 #[doc = "\n Implement this structure to handle events related to browser display state.\n The functions of this structure will be called on the UI thread.\n\n NOTE: This struct is allocated client-side.\n"]
 pub type cef_display_handler_t = _cef_display_handler_t;
@@ -11915,7 +11850,7 @@ pub struct _cef_request_handler_t {
     pub on_render_view_ready: ::std::option::Option<
         unsafe extern "C" fn(self_: *mut _cef_request_handler_t, browser: *mut _cef_browser_t),
     >,
-    #[doc = "\n Called on the browser process UI thread when the render process is\n unresponsive as indicated by a lack of input event processing for at least\n 15 seconds. Return false (0) for the default behavior which is to continue\n waiting with Alloy style or display of the \"Page unresponsive\" dialog with\n Chrome style. Return true (1) and don't execute the callback to continue\n waiting without display of the Chrome style dialog. Return true (1) and\n call cef_unresponsive_process_callback_t::Wait either in this function or\n at a later time to reset the wait timer. In cases where you continue\n waiting there may be another call to this function if the process remains\n unresponsive. Return true (1) and call\n cef_unresponsive_process_callback_t::Terminate either in this function or\n at a later time to terminate the unresponsive process, resulting in a call\n to OnRenderProcessTerminated. OnRenderProcessResponsive will be called if\n the process becomes responsive after this function is called. This\n functionality depends on the hang monitor which can be disabled by passing\n the `--disable-hang-monitor` command-line flag.\n"]
+    #[doc = "\n Called on the browser process UI thread when the render process is\n unresponsive as indicated by a lack of input event processing for at least\n 15 seconds. Return false (0) for the default behavior which is an\n indefinite wait with Alloy style or display of the \"Page unresponsive\"\n dialog with Chrome style. Return true (1) and don't execute the callback\n for an indefinite wait without display of the Chrome style dialog. Return\n true (1) and call cef_unresponsive_process_callback_t::Wait either in this\n function or at a later time to reset the wait timer, potentially\n triggering another call to this function if the process remains\n unresponsive. Return true (1) and call\n cef_unresponsive_process_callback_t:: Terminate either in this function or\n at a later time to terminate the unresponsive process, resulting in a call\n to OnRenderProcessTerminated. OnRenderProcessResponsive will be called if\n the process becomes responsive after this function is called. This\n functionality depends on the hang monitor which can be disabled by passing\n the `--disable-hang-monitor` command-line flag.\n"]
     pub on_render_process_unresponsive: ::std::option::Option<
         unsafe extern "C" fn(
             self_: *mut _cef_request_handler_t,
@@ -12209,14 +12144,10 @@ pub struct _cef_command_line_t {
     pub prepend_wrapper: ::std::option::Option<
         unsafe extern "C" fn(self_: *mut _cef_command_line_t, wrapper: *const cef_string_t),
     >,
-    #[doc = "\n Remove a switch from the command line. If no such switch is present, this\n has no effect.\n"]
-    pub remove_switch: ::std::option::Option<
-        unsafe extern "C" fn(self_: *mut _cef_command_line_t, name: *const cef_string_t),
-    >,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of _cef_command_line_t"][::std::mem::size_of::<_cef_command_line_t>() - 208usize];
+    ["Size of _cef_command_line_t"][::std::mem::size_of::<_cef_command_line_t>() - 200usize];
     ["Alignment of _cef_command_line_t"][::std::mem::align_of::<_cef_command_line_t>() - 8usize];
     ["Offset of field: _cef_command_line_t::base"]
         [::std::mem::offset_of!(_cef_command_line_t, base) - 0usize];
@@ -12260,8 +12191,6 @@ const _: () = {
         [::std::mem::offset_of!(_cef_command_line_t, append_argument) - 184usize];
     ["Offset of field: _cef_command_line_t::prepend_wrapper"]
         [::std::mem::offset_of!(_cef_command_line_t, prepend_wrapper) - 192usize];
-    ["Offset of field: _cef_command_line_t::remove_switch"]
-        [::std::mem::offset_of!(_cef_command_line_t, remove_switch) - 200usize];
 };
 #[doc = "\n Structure used to create and/or parse command line arguments. Arguments with\n \"--\", \"-\" and, on Windows, \"/\" prefixes are considered switches. Switches\n will always precede any arguments without switch prefixes. Switches can\n optionally have a value specified using the \"=\" delimiter (e.g.\n \"-switch=value\"). An argument of \"--\" will terminate switch parsing with all\n subsequent tokens, regardless of prefix, being interpreted as non-switch\n arguments. Switch names should be lowercase ASCII and will be converted to\n such if necessary. Switch values will retain the original case and UTF8\n encoding. This structure can be used before cef_initialize() is called.\n\n NOTE: This struct is allocated DLL-side.\n"]
 pub type cef_command_line_t = _cef_command_line_t;
@@ -13620,7 +13549,7 @@ const _: () = {
 #[doc = "\n Structure that creates cef_resource_handler_t instances for handling scheme\n requests. The functions of this structure will always be called on the IO\n thread.\n\n NOTE: This struct is allocated client-side.\n"]
 pub type cef_scheme_handler_factory_t = _cef_scheme_handler_factory_t;
 unsafe extern "C" {
-    #[doc = "\n Register a scheme handler factory with the global request context. An NULL\n |domain_name| value for a standard scheme will cause the factory to match\n all domain names. The |domain_name| value will be ignored for non-standard\n schemes. If |scheme_name| is a built-in scheme and no handler is returned by\n |factory| then the built-in scheme handler factory will be called. If\n |scheme_name| is a custom scheme then you must also implement the\n cef_app_t::on_register_custom_schemes() function in all processes. This\n function may be called multiple times to change or remove the factory that\n matches the specified |scheme_name| and optional |domain_name|. Returns\n false (0) if an error occurs. This function may be called on any thread in\n the browser process. Using this function is equivalent to calling cef_reques\n t_context_t::cef_request_context_get_global_context()->register_scheme_handl\n er_factory().\n"]
+    #[doc = "\n Register a scheme handler factory with the global request context. An NULL\n |domain_name| value for a standard scheme will cause the factory to match\n all domain names. The |domain_name| value will be ignored for non-standard\n schemes. If |scheme_name| is a built-in scheme and no handler is returned by\n |factory| then the built-in scheme handler factory will be called. If\n |scheme_name| is a custom scheme then you must also implement the\n cef_app_t::on_register_custom_schemes() function in all processes. This\n function may be called multiple times to change or remove the factory that\n matches the specified |scheme_name| and optional |domain_name|. Returns\n false (0) if an error occurs. This function may be called on any thread in\n the browser process. Using this function is equivalent to calling cef_reques\n t_context_t::cef_request_context_get_global_context()-\n >register_scheme_handler_factory().\n"]
     pub fn cef_register_scheme_handler_factory(
         scheme_name: *const cef_string_t,
         domain_name: *const cef_string_t,
@@ -13628,7 +13557,7 @@ unsafe extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
-    #[doc = "\n Clear all scheme handler factories registered with the global request\n context. Returns false (0) on error. This function may be called on any\n thread in the browser process. Using this function is equivalent to calling\n cef_request_context_t::cef_request_context_get_global_context()->clear_schem\n e_handler_factories().\n"]
+    #[doc = "\n Clear all scheme handler factories registered with the global request\n context. Returns false (0) on error. This function may be called on any\n thread in the browser process. Using this function is equivalent to calling\n cef_request_context_t::cef_request_context_get_global_context()-\n >clear_scheme_handler_factories().\n"]
     pub fn cef_clear_scheme_handler_factories() -> ::std::os::raw::c_int;
 }
 #[doc = "\n Implement this structure to provide handler implementations. Methods will be\n called by the process and/or thread indicated.\n\n NOTE: This struct is allocated client-side.\n"]
@@ -13689,7 +13618,7 @@ unsafe extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
-    #[doc = "\n This function should be called on the main application thread to initialize\n the CEF browser process. The |application| parameter may be NULL. Returns\n true (1) if initialization succeeds. Returns false (0) if initialization\n fails or if early exit is desired (for example, due to process singleton\n relaunch behavior). If this function returns false (0) then the application\n should exit immediately without calling any other CEF functions except,\n optionally, CefGetExitCode. The |windows_sandbox_info| parameter is only\n used on Windows and may be NULL (see cef_sandbox_win.h for details).\n"]
+    #[doc = "\n This function should be called on the main application thread to initialize\n the CEF browser process. The |application| parameter may be NULL. Returns\n true (1) if initialization succeeds. Returns false (0) if initialization\n fails or if early exit is desired (for example, due to process singleton\n relaunch behavior). If this function returns false (0) then the application\n should exit immediately without calling any other CEF functions except,\n optionally, CefGetErrorCode. The |windows_sandbox_info| parameter is only\n used on Windows and may be NULL (see cef_sandbox_win.h for details).\n"]
     pub fn cef_initialize(
         args: *const cef_main_args_t,
         settings: *const _cef_settings_t,
@@ -13716,10 +13645,6 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = "\n Quit the CEF message loop that was started by calling\n cef_run_message_loop(). This function should only be called on the main\n application thread and only if cef_run_message_loop() was used.\n"]
     pub fn cef_quit_message_loop();
-}
-unsafe extern "C" {
-    #[doc = "\n Set to true (1) before calling OS APIs on the CEF UI thread that will enter\n a native message loop (see usage restrictions below). Set to false (0) after\n exiting the native message loop. On Windows, use the CefSetOSModalLoop\n function instead in cases like native top menus where resize of the browser\n content is not required, or in cases like printer APIs where reentrancy\n safety cannot be guaranteed.\n\n Nested processing of Chromium tasks is disabled by default because common\n controls and/or printer functions may use nested native message loops that\n lead to unplanned reentrancy. This function re-enables nested processing in\n the scope of an upcoming native message loop. It must only be used in cases\n where the stack is reentrancy safe and processing nestable tasks is\n explicitly safe. Do not use in cases (like the printer example) where an OS\n API may experience unplanned reentrancy as a result of a new task executing\n immediately.\n\n For instance,\n - The UI thread is running a message loop.\n - It receives a task #1 and executes it.\n - The task #1 implicitly starts a nested message loop. For example, via\n   Windows APIs such as MessageBox or GetSaveFileName, or default handling of\n   a user-initiated drag/resize operation (e.g. DefWindowProc handling of\n   WM_SYSCOMMAND for SC_MOVE/SC_SIZE).\n - The UI thread receives a task #2 before or while in this second message\n   loop.\n - With NestableTasksAllowed set to true (1), the task #2 will run right\n   away. Otherwise, it will be executed right after task #1 completes at\n   \"thread message loop level\".\n"]
-    pub fn cef_set_nestable_tasks_allowed(allowed: ::std::os::raw::c_int);
 }
 #[doc = "\n Structure used to make a URL request. URL requests are not associated with a\n browser instance so no cef_client_t callbacks will be executed. URL requests\n can be created on any valid CEF thread in either the browser or render\n process. Once created the functions of the URL request object must be\n accessed on the same thread that created it.\n\n NOTE: This struct is allocated DLL-side.\n"]
 #[repr(C)]
@@ -14975,18 +14900,11 @@ pub struct _cef_browser_view_delegate_t {
     pub get_browser_runtime_style: ::std::option::Option<
         unsafe extern "C" fn(self_: *mut _cef_browser_view_delegate_t) -> cef_runtime_style_t,
     >,
-    #[doc = "\n Return true (1) to allow the use of JavaScript moveTo/By() and\n resizeTo/By() (without user activation) with Document picture-in-picture\n popups.\n"]
-    pub allow_move_for_picture_in_picture: ::std::option::Option<
-        unsafe extern "C" fn(
-            self_: *mut _cef_browser_view_delegate_t,
-            browser_view: *mut _cef_browser_view_t,
-        ) -> ::std::os::raw::c_int,
-    >,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
     ["Size of _cef_browser_view_delegate_t"]
-        [::std::mem::size_of::<_cef_browser_view_delegate_t>() - 200usize];
+        [::std::mem::size_of::<_cef_browser_view_delegate_t>() - 192usize];
     ["Alignment of _cef_browser_view_delegate_t"]
         [::std::mem::align_of::<_cef_browser_view_delegate_t>() - 8usize];
     ["Offset of field: _cef_browser_view_delegate_t::base"]
@@ -15013,11 +14931,6 @@ const _: () = {
         _cef_browser_view_delegate_t,
         get_browser_runtime_style
     ) - 184usize];
-    ["Offset of field: _cef_browser_view_delegate_t::allow_move_for_picture_in_picture"][::std::mem::offset_of!(
-        _cef_browser_view_delegate_t,
-        allow_move_for_picture_in_picture
-    )
-        - 192usize];
 };
 #[doc = "\n Implement this structure to handle BrowserView events. The functions of this\n structure will be called on the browser process UI thread unless otherwise\n indicated.\n\n NOTE: This struct is allocated client-side.\n"]
 pub type cef_browser_view_delegate_t = _cef_browser_view_delegate_t;
@@ -15142,7 +15055,7 @@ unsafe extern "C" {
     #[doc = "\n Create a new ScrollView.\n"]
     pub fn cef_scroll_view_create(delegate: *mut _cef_view_delegate_t) -> *mut cef_scroll_view_t;
 }
-#[doc = "\n This structure typically, but not always, corresponds to a physical display\n connected to the system. A fake Display may exist on a headless system, or a\n Display may correspond to a remote, virtual display. All size and position\n values are in density independent pixel (DIP) coordinates unless otherwise\n indicated. Methods must be called on the browser process UI thread unless\n otherwise indicated.\n\n For details on coordinate systems and usage see\n https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage#markdown-\n header-coordinate-systems\n\n NOTE: This struct is allocated DLL-side.\n"]
+#[doc = "\n This structure typically, but not always, corresponds to a physical display\n connected to the system. A fake Display may exist on a headless system, or a\n Display may correspond to a remote, virtual display. All size and position\n values are in density independent pixel (DIP) coordinates unless otherwise\n indicated. Methods must be called on the browser process UI thread unless\n otherwise indicated.\n\n NOTE: This struct is allocated DLL-side.\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _cef_display_t {
@@ -15150,7 +15063,7 @@ pub struct _cef_display_t {
     pub base: cef_base_ref_counted_t,
     #[doc = "\n Returns the unique identifier for this Display.\n"]
     pub get_id: ::std::option::Option<unsafe extern "C" fn(self_: *mut _cef_display_t) -> i64>,
-    #[doc = "\n Returns this Display's device pixel scale factor. This specifies how much\n the UI should be scaled when the actual output has more pixels than\n standard displays (which is around 100~120dpi). The potential return\n values differ by platform. Windowed browsers with 1.0 zoom will have a\n JavaScript `window.devicePixelRatio` value matching the associated\n Display's get_device_scale_factor() value.\n"]
+    #[doc = "\n Returns this Display's device pixel scale factor. This specifies how much\n the UI should be scaled when the actual output has more pixels than\n standard displays (which is around 100~120dpi). The potential return\n values differ by platform.\n"]
     pub get_device_scale_factor:
         ::std::option::Option<unsafe extern "C" fn(self_: *mut _cef_display_t) -> f32>,
     #[doc = "\n Convert |point| from DIP coordinates to pixel coordinates using this\n Display's device scale factor.\n"]
@@ -15193,7 +15106,7 @@ const _: () = {
     ["Offset of field: _cef_display_t::get_rotation"]
         [::std::mem::offset_of!(_cef_display_t, get_rotation) - 88usize];
 };
-#[doc = "\n This structure typically, but not always, corresponds to a physical display\n connected to the system. A fake Display may exist on a headless system, or a\n Display may correspond to a remote, virtual display. All size and position\n values are in density independent pixel (DIP) coordinates unless otherwise\n indicated. Methods must be called on the browser process UI thread unless\n otherwise indicated.\n\n For details on coordinate systems and usage see\n https://bitbucket.org/chromiumembedded/cef/wiki/GeneralUsage#markdown-\n header-coordinate-systems\n\n NOTE: This struct is allocated DLL-side.\n"]
+#[doc = "\n This structure typically, but not always, corresponds to a physical display\n connected to the system. A fake Display may exist on a headless system, or a\n Display may correspond to a remote, virtual display. All size and position\n values are in density independent pixel (DIP) coordinates unless otherwise\n indicated. Methods must be called on the browser process UI thread unless\n otherwise indicated.\n\n NOTE: This struct is allocated DLL-side.\n"]
 pub type cef_display_t = _cef_display_t;
 unsafe extern "C" {
     #[doc = "\n Returns the primary Display.\n"]

@@ -620,7 +620,7 @@ pub struct BrowserSettings {
     pub text_area_resize: State,
     pub tab_to_links: State,
     pub local_storage: State,
-    pub databases_deprecated: State,
+    pub databases: State,
     pub webgl: State,
     pub background_color: u32,
     pub chrome_status_bubble: State,
@@ -652,7 +652,7 @@ impl From<_cef_browser_settings_t> for BrowserSettings {
             text_area_resize: value.text_area_resize.into(),
             tab_to_links: value.tab_to_links.into(),
             local_storage: value.local_storage.into(),
-            databases_deprecated: value.databases_deprecated.into(),
+            databases: value.databases.into(),
             webgl: value.webgl.into(),
             background_color: value.background_color,
             chrome_status_bubble: value.chrome_status_bubble.into(),
@@ -686,7 +686,7 @@ impl From<BrowserSettings> for _cef_browser_settings_t {
             text_area_resize: value.text_area_resize.into(),
             tab_to_links: value.tab_to_links.into(),
             local_storage: value.local_storage.into(),
-            databases_deprecated: value.databases_deprecated.into(),
+            databases: value.databases.into(),
             webgl: value.webgl.into(),
             background_color: value.background_color,
             chrome_status_bubble: value.chrome_status_bubble.into(),
@@ -17331,22 +17331,6 @@ pub trait ImplDisplayHandler: Clone + Sized + Rc {
         has_audio_access: ::std::os::raw::c_int,
     ) {
     }
-    #[doc = "See [`_cef_display_handler_t::on_contents_bounds_change`] for more documentation."]
-    fn on_contents_bounds_change(
-        &self,
-        browser: Option<&mut Browser>,
-        new_bounds: Option<&Rect>,
-    ) -> ::std::os::raw::c_int {
-        Default::default()
-    }
-    #[doc = "See [`_cef_display_handler_t::get_root_window_screen_rect`] for more documentation."]
-    fn root_window_screen_rect(
-        &self,
-        browser: Option<&mut Browser>,
-        rect: Option<&mut Rect>,
-    ) -> ::std::os::raw::c_int {
-        Default::default()
-    }
     fn init_methods(object: &mut _cef_display_handler_t) {
         impl_cef_display_handler_t::init_methods::<Self, _cef_display_handler_t>(object);
     }
@@ -17369,8 +17353,6 @@ mod impl_cef_display_handler_t {
         object.on_loading_progress_change = Some(on_loading_progress_change::<I, R>);
         object.on_cursor_change = Some(on_cursor_change::<I, R>);
         object.on_media_access_change = Some(on_media_access_change::<I, R>);
-        object.on_contents_bounds_change = Some(on_contents_bounds_change::<I, R>);
-        object.get_root_window_screen_rect = Some(get_root_window_screen_rect::<I, R>);
     }
     extern "C" fn on_address_change<I: ImplDisplayHandler, R: Rc>(
         self_: *mut _cef_display_handler_t,
@@ -17604,46 +17586,6 @@ mod impl_cef_display_handler_t {
             arg_has_video_access,
             arg_has_audio_access,
         )
-    }
-    extern "C" fn on_contents_bounds_change<I: ImplDisplayHandler, R: Rc>(
-        self_: *mut _cef_display_handler_t,
-        browser: *mut _cef_browser_t,
-        new_bounds: *const _cef_rect_t,
-    ) -> ::std::os::raw::c_int {
-        let (arg_self_, arg_browser, arg_new_bounds) = (self_, browser, new_bounds);
-        let arg_self_: &RcImpl<R, I> = RcImpl::get(arg_self_.cast());
-        let mut arg_browser =
-            unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
-        let arg_browser = arg_browser.as_mut();
-        let arg_new_bounds = if arg_new_bounds.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect, _>::from(arg_new_bounds))
-        };
-        let arg_new_bounds = arg_new_bounds.as_ref().map(|arg| arg.as_ref());
-        ImplDisplayHandler::on_contents_bounds_change(
-            &arg_self_.interface,
-            arg_browser,
-            arg_new_bounds,
-        )
-    }
-    extern "C" fn get_root_window_screen_rect<I: ImplDisplayHandler, R: Rc>(
-        self_: *mut _cef_display_handler_t,
-        browser: *mut _cef_browser_t,
-        rect: *mut _cef_rect_t,
-    ) -> ::std::os::raw::c_int {
-        let (arg_self_, arg_browser, arg_rect) = (self_, browser, rect);
-        let arg_self_: &RcImpl<R, I> = RcImpl::get(arg_self_.cast());
-        let mut arg_browser =
-            unsafe { arg_browser.as_mut() }.map(|arg| Browser(unsafe { RefGuard::from_raw(arg) }));
-        let arg_browser = arg_browser.as_mut();
-        let mut arg_rect = if arg_rect.is_null() {
-            None
-        } else {
-            Some(WrapParamRef::<Rect, _>::from(arg_rect))
-        };
-        let arg_rect = arg_rect.as_mut().map(|arg| arg.as_mut());
-        ImplDisplayHandler::root_window_screen_rect(&arg_self_.interface, arg_browser, arg_rect)
     }
 }
 impl ImplDisplayHandler for DisplayHandler {
@@ -17927,62 +17869,6 @@ impl ImplDisplayHandler for DisplayHandler {
                     arg_has_audio_access,
                 );
             }
-        }
-    }
-    fn on_contents_bounds_change(
-        &self,
-        browser: Option<&mut Browser>,
-        new_bounds: Option<&Rect>,
-    ) -> ::std::os::raw::c_int {
-        unsafe {
-            self.0
-                .on_contents_bounds_change
-                .map(|f| {
-                    let (arg_browser, arg_new_bounds) = (browser, new_bounds);
-                    let arg_self_ = self.into_raw();
-                    let arg_browser = arg_browser
-                        .map(|arg| {
-                            arg.add_ref();
-                            ImplBrowser::get_raw(arg)
-                        })
-                        .unwrap_or(std::ptr::null_mut());
-                    let arg_new_bounds = arg_new_bounds.cloned().map(|arg| arg.into());
-                    let arg_new_bounds = arg_new_bounds
-                        .as_ref()
-                        .map(std::ptr::from_ref)
-                        .unwrap_or(std::ptr::null());
-                    let result = f(arg_self_, arg_browser, arg_new_bounds);
-                    result.wrap_result()
-                })
-                .unwrap_or_default()
-        }
-    }
-    fn root_window_screen_rect(
-        &self,
-        browser: Option<&mut Browser>,
-        rect: Option<&mut Rect>,
-    ) -> ::std::os::raw::c_int {
-        unsafe {
-            self.0
-                .get_root_window_screen_rect
-                .map(|f| {
-                    let (arg_browser, arg_rect) = (browser, rect);
-                    let arg_self_ = self.into_raw();
-                    let arg_browser = arg_browser
-                        .map(|arg| {
-                            arg.add_ref();
-                            ImplBrowser::get_raw(arg)
-                        })
-                        .unwrap_or(std::ptr::null_mut());
-                    let mut arg_rect = arg_rect.cloned().map(|arg| arg.into());
-                    let arg_rect = arg_rect
-                        .as_mut()
-                        .map(std::ptr::from_mut)
-                        .unwrap_or(std::ptr::null_mut());
-                    let result = f(arg_self_, arg_browser, arg_rect);
-                    result.wrap_result()
-                })
-                .unwrap_or_default()
         }
     }
     fn get_raw(&self) -> *mut _cef_display_handler_t {
@@ -28314,8 +28200,6 @@ pub trait ImplCommandLine: Clone + Sized + Rc {
     fn append_argument(&self, argument: Option<&CefString>);
     #[doc = "See [`_cef_command_line_t::prepend_wrapper`] for more documentation."]
     fn prepend_wrapper(&self, wrapper: Option<&CefString>);
-    #[doc = "See [`_cef_command_line_t::remove_switch`] for more documentation."]
-    fn remove_switch(&self, name: Option<&CefString>);
     fn get_raw(&self) -> *mut _cef_command_line_t;
 }
 impl ImplCommandLine for CommandLine {
@@ -28569,18 +28453,6 @@ impl ImplCommandLine for CommandLine {
                     .map(|arg| arg.into_raw())
                     .unwrap_or(std::ptr::null());
                 f(arg_self_, arg_wrapper);
-            }
-        }
-    }
-    fn remove_switch(&self, name: Option<&CefString>) {
-        unsafe {
-            if let Some(f) = self.0.remove_switch {
-                let arg_name = name;
-                let arg_self_ = self.into_raw();
-                let arg_name = arg_name
-                    .map(|arg| arg.into_raw())
-                    .unwrap_or(std::ptr::null());
-                f(arg_self_, arg_name);
             }
         }
     }
@@ -38091,13 +37963,6 @@ pub trait ImplBrowserViewDelegate: ImplViewDelegate {
     fn browser_runtime_style(&self) -> RuntimeStyle {
         Default::default()
     }
-    #[doc = "See [`_cef_browser_view_delegate_t::allow_move_for_picture_in_picture`] for more documentation."]
-    fn allow_move_for_picture_in_picture(
-        &self,
-        browser_view: Option<&mut BrowserView>,
-    ) -> ::std::os::raw::c_int {
-        Default::default()
-    }
     fn init_methods(object: &mut _cef_browser_view_delegate_t) {
         impl_cef_view_delegate_t::init_methods::<Self, _cef_browser_view_delegate_t>(
             &mut object.base,
@@ -38128,7 +37993,6 @@ mod impl_cef_browser_view_delegate_t {
             Some(use_frameless_window_for_picture_in_picture::<I, R>);
         object.on_gesture_command = Some(on_gesture_command::<I, R>);
         object.get_browser_runtime_style = Some(get_browser_runtime_style::<I, R>);
-        object.allow_move_for_picture_in_picture = Some(allow_move_for_picture_in_picture::<I, R>);
     }
     extern "C" fn on_browser_created<I: ImplBrowserViewDelegate, R: Rc>(
         self_: *mut _cef_browser_view_delegate_t,
@@ -38277,20 +38141,6 @@ mod impl_cef_browser_view_delegate_t {
         let arg_self_: &RcImpl<R, I> = RcImpl::get(arg_self_.cast());
         let result = ImplBrowserViewDelegate::browser_runtime_style(&arg_self_.interface);
         result.into()
-    }
-    extern "C" fn allow_move_for_picture_in_picture<I: ImplBrowserViewDelegate, R: Rc>(
-        self_: *mut _cef_browser_view_delegate_t,
-        browser_view: *mut _cef_browser_view_t,
-    ) -> ::std::os::raw::c_int {
-        let (arg_self_, arg_browser_view) = (self_, browser_view);
-        let arg_self_: &RcImpl<R, I> = RcImpl::get(arg_self_.cast());
-        let mut arg_browser_view = unsafe { arg_browser_view.as_mut() }
-            .map(|arg| BrowserView(unsafe { RefGuard::from_raw(arg) }));
-        let arg_browser_view = arg_browser_view.as_mut();
-        ImplBrowserViewDelegate::allow_move_for_picture_in_picture(
-            &arg_self_.interface,
-            arg_browser_view,
-        )
     }
 }
 impl ImplViewDelegate for BrowserViewDelegate {
@@ -38562,28 +38412,6 @@ impl ImplBrowserViewDelegate for BrowserViewDelegate {
                 .map(|f| {
                     let arg_self_ = self.into_raw();
                     let result = f(arg_self_);
-                    result.wrap_result()
-                })
-                .unwrap_or_default()
-        }
-    }
-    fn allow_move_for_picture_in_picture(
-        &self,
-        browser_view: Option<&mut BrowserView>,
-    ) -> ::std::os::raw::c_int {
-        unsafe {
-            self.0
-                .allow_move_for_picture_in_picture
-                .map(|f| {
-                    let arg_browser_view = browser_view;
-                    let arg_self_ = self.into_raw();
-                    let arg_browser_view = arg_browser_view
-                        .map(|arg| {
-                            arg.add_ref();
-                            ImplBrowserView::get_raw(arg)
-                        })
-                        .unwrap_or(std::ptr::null_mut());
-                    let result = f(arg_self_, arg_browser_view);
                     result.wrap_result()
                 })
                 .unwrap_or_default()
@@ -44681,7 +44509,7 @@ impl From<ChromeToolbarButtonType> for cef_chrome_toolbar_button_type_t {
 }
 impl Default for ChromeToolbarButtonType {
     fn default() -> Self {
-        Self(cef_chrome_toolbar_button_type_t::CEF_CTBT_CAST_DEPRECATED)
+        Self(cef_chrome_toolbar_button_type_t::CEF_CTBT_CAST)
     }
 }
 
@@ -45077,28 +44905,6 @@ pub fn unload_library() -> ::std::os::raw::c_int {
     unsafe {
         let result = cef_unload_library();
         result.wrap_result()
-    }
-}
-
-/// See [`cef_sandbox_initialize`] for more documentation.
-pub fn sandbox_initialize(
-    argc: ::std::os::raw::c_int,
-    argv: *mut *mut ::std::os::raw::c_char,
-) -> *mut ::std::os::raw::c_void {
-    unsafe {
-        let (arg_argc, arg_argv) = (argc, argv);
-        let arg_argv = arg_argv.cast();
-        let result = cef_sandbox_initialize(arg_argc, arg_argv);
-        result.wrap_result()
-    }
-}
-
-/// See [`cef_sandbox_destroy`] for more documentation.
-pub fn sandbox_destroy(sandbox_context: *mut u8) {
-    unsafe {
-        let arg_sandbox_context = sandbox_context;
-        let arg_sandbox_context = arg_sandbox_context.cast();
-        cef_sandbox_destroy(arg_sandbox_context);
     }
 }
 
@@ -47189,14 +46995,6 @@ pub fn run_message_loop() {
 pub fn quit_message_loop() {
     unsafe {
         cef_quit_message_loop();
-    }
-}
-
-/// See [`cef_set_nestable_tasks_allowed`] for more documentation.
-pub fn set_nestable_tasks_allowed(allowed: ::std::os::raw::c_int) {
-    unsafe {
-        let arg_allowed = allowed;
-        cef_set_nestable_tasks_allowed(arg_allowed);
     }
 }
 

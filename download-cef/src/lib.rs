@@ -21,6 +21,8 @@ use std::{
 #[macro_use]
 extern crate thiserror;
 
+pub mod tt_cef;
+
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Unsupported target triplet: {0}")]

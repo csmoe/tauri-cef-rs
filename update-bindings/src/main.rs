@@ -58,6 +58,8 @@ struct Args {
     version: String,
     #[arg(short, long, default_value = default_download_url())]
     mirror_url: String,
+    #[arg(long)]
+    tt_cef_version: Option<String>,
 }
 
 fn main() -> Result<()> {
@@ -66,7 +68,11 @@ fn main() -> Result<()> {
 
     if args.bindgen {
         if args.download {
-            let _ = upgrade::download(args.mirror_url.as_str(), target, args.version.as_str());
+            if let Some(tt_cef_version) = args.tt_cef_version {
+                let _ = upgrade::download_tt_cef(target, tt_cef_version.as_str());
+            } else {
+                let _ = upgrade::download(args.mirror_url.as_str(), target, args.version.as_str());
+            }
         }
 
         upgrade::sys_bindgen(target)?;
